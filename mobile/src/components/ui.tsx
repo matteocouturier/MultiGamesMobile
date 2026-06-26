@@ -10,7 +10,7 @@ import {
   ViewProps,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { theme } from '../theme';
+import { theme, toggleTheme } from '../theme';
 
 /** Ambient coloured glow orbs that float behind the content. */
 function Ambiance() {
@@ -25,24 +25,39 @@ function Ambiance() {
 
 export function Screen({ children, style, ...rest }: ViewProps) {
   const fade = useRef(new Animated.Value(0)).current;
-  const rise = useRef(new Animated.Value(14)).current;
+  const rise = useRef(new Animated.Value(24)).current;
+  const scale = useRef(new Animated.Value(0.97)).current;
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fade, { toValue: 1, duration: 360, useNativeDriver: true }),
-      Animated.spring(rise, { toValue: 0, useNativeDriver: true, friction: 8 }),
+      Animated.timing(fade, { toValue: 1, duration: 320, useNativeDriver: true }),
+      Animated.spring(rise, { toValue: 0, useNativeDriver: true, friction: 8, tension: 60 }),
+      Animated.spring(scale, { toValue: 1, useNativeDriver: true, friction: 8, tension: 60 }),
     ]).start();
-  }, [fade, rise]);
+  }, [fade, rise, scale]);
 
   return (
     <LinearGradient colors={theme.colors.bgGradient} style={styles.screen}>
       <Ambiance />
       <Animated.View
-        style={[styles.screenInner, { opacity: fade, transform: [{ translateY: rise }] }, style]}
+        style={[styles.screenInner, { opacity: fade, transform: [{ translateY: rise }, { scale }] }, style]}
         {...rest}
       >
         {children}
       </Animated.View>
     </LinearGradient>
+  );
+}
+
+/** Small round sun/moon button that switches between light and dark mode. */
+export function ThemeToggle() {
+  return (
+    <Pressable
+      onPress={toggleTheme}
+      style={({ pressed }) => [styles.toggle, { opacity: pressed ? 0.7 : 1 }]}
+      hitSlop={8}
+    >
+      <Text style={styles.toggleIcon}>{theme.mode === 'dark' ? '☀️' : '🌙'}</Text>
+    </Pressable>
   );
 }
 
@@ -211,4 +226,15 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   pillText: { fontSize: theme.font.small, fontWeight: '800', letterSpacing: 0.3 },
+  toggle: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  toggleIcon: { fontSize: 20 },
 });

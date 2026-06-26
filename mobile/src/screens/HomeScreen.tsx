@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Body, Button, Card, Pill, Screen, Subtitle, Title } from '../components/ui';
+import { Body, Button, Card, Pill, Screen, Subtitle, ThemeToggle, Title } from '../components/ui';
 import { theme } from '../theme';
 import { useStore } from '../state/store';
 import { GameDefinition } from '../shared/types';
@@ -37,7 +37,10 @@ export function HomeScreen() {
           <Title style={styles.brand}>Salut {playerName} 👋</Title>
           <Subtitle>{catalog.length} mini-jeux à jouer ensemble</Subtitle>
         </View>
-        <Button label="Rejoindre" variant="ghost" small onPress={() => setJoinMode(true)} />
+        <View style={styles.headerActions}>
+          <ThemeToggle />
+          <Button label="Rejoindre" variant="ghost" small onPress={() => setJoinMode(true)} />
+        </View>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 48 }}>
@@ -114,6 +117,7 @@ function Sheet({ visible, onClose, children }: { visible: boolean; onClose: () =
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: theme.spacing(2.5) },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing(1) },
   kicker: { color: theme.colors.primary, fontSize: 12, fontWeight: '900', letterSpacing: 3, marginBottom: 2 },
   brand: { fontSize: 30 },
   empty: { color: theme.colors.textMuted, textAlign: 'center', marginTop: theme.spacing(6) },
@@ -148,7 +152,7 @@ const styles = StyleSheet.create({
   chevron: { fontSize: 30, fontWeight: '300' },
   backdrop: { flex: 1, backgroundColor: '#000000BB' },
   sheet: {
-    backgroundColor: '#1A1338',
+    backgroundColor: theme.colors.sheet,
     borderTopLeftRadius: theme.radius.xl,
     borderTopRightRadius: theme.radius.xl,
     padding: theme.spacing(3),

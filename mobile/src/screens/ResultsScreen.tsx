@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, View } from 'react-native';
 import { Body, Button, Card, Screen, Subtitle, Title } from '../components/ui';
+import { Confetti } from '../components/Confetti';
 import { theme } from '../theme';
 import { useStore } from '../state/store';
 
@@ -19,6 +20,7 @@ export function ResultsScreen() {
 
   return (
     <Screen style={styles.center}>
+      <Confetti />
       <Body style={styles.kicker}>PARTIE TERMINÉE</Body>
 
       <Animated.View style={{ transform: [{ scale: pop }], alignItems: 'center' }}>

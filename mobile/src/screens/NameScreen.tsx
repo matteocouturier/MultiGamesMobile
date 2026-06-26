@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, StyleSheet, TextInput, View } from 'react-native';
-import { Body, Button, Screen, Title } from '../components/ui';
+import { Body, Button, Screen, ThemeToggle, Title } from '../components/ui';
 import { theme } from '../theme';
 import { useStore } from '../state/store';
 
@@ -27,6 +27,9 @@ export function NameScreen() {
 
   return (
     <Screen style={styles.center}>
+      <View style={styles.toggleWrap}>
+        <ThemeToggle />
+      </View>
       <Animated.View style={[styles.logoWrap, { transform: [{ translateY }] }]}>
         <View style={styles.logoGlow}>
           <Body style={styles.dice}>🎲</Body>
@@ -61,6 +64,7 @@ export function NameScreen() {
 
 const styles = StyleSheet.create({
   center: { justifyContent: 'center', paddingBottom: theme.spacing(8) },
+  toggleWrap: { position: 'absolute', top: 0, right: 0 },
   logoWrap: { alignItems: 'center', marginBottom: theme.spacing(2) },
   logoGlow: {
     width: 110,
