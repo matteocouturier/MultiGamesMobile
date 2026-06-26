@@ -19,6 +19,10 @@ import { mathDuelModule } from './mathDuel';
 import { emojiQuizModule } from './emojiQuiz';
 import { stroopModule } from './stroop';
 import { morpionModule } from './morpion';
+import { simonModule } from './simon';
+import { hangmanModule } from './hangman';
+import { topCardModule } from './topCard';
+import { popularModule } from './popular';
 
 export function registerGames(): void {
   registry.register(guessTheWordModule);
@@ -36,5 +40,9 @@ export function registerGames(): void {
   registry.register(emojiQuizModule);
   registry.register(stroopModule);
   registry.register(morpionModule);
+  registry.register(simonModule);
+  registry.register(hangmanModule);
+  registry.register(topCardModule);
+  registry.register(popularModule);
   // registry.register(nextGameModule);  <-- future games go here
 }

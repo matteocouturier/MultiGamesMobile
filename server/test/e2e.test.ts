@@ -304,8 +304,49 @@ async function main() {
   assert.ok(second.state.board.filter((c: any) => c).length === 1, 'un symbole posé');
   console.log('✓ Morpion: coup joué, tour passé à l’adversaire');
 
+  // ---- Scénario 16 : Simon ------------------------------------------------
+  console.log('\n--- Simon ---');
+  const si = await makeRoom('simon', ['I1', 'I2']);
+  await new Promise((res) => si[0].socket.emit('lobby:start', res));
+  await waitFor(() => si.every((t) => t.state?.phase === 'show'), 'simon show');
+  assert.ok(Array.isArray(si[0].state.sequence) && si[0].state.sequence.length === 1, 'séquence de longueur 1 montrée');
+  console.log('✓ Simon: séquence affichée en phase "show"');
+
+  // ---- Scénario 17 : Le Pendu ---------------------------------------------
+  console.log('\n--- Le Pendu ---');
+  const hm = await makeRoom('hangman', ['G1', 'G2']);
+  await new Promise((res) => hm[0].socket.emit('lobby:start', res));
+  await waitFor(() => hm.every((t) => t.state?.phase === 'play'), 'hangman play');
+  assert.ok(hm[0].state.masked.length >= 4, 'mot masqué affiché');
+  hm[0].socket.emit('game:action', { type: 'letter', payload: { char: 'E' } });
+  await waitFor(() => hm[1].state.guessed.includes('E'), 'lettre enregistrée');
+  console.log('✓ Le Pendu: lettre proposée enregistrée');
+
+  // ---- Scénario 18 : Plus Haute Carte -------------------------------------
+  console.log('\n--- Plus Haute Carte ---');
+  const tc = await makeRoom('top-card', ['K1', 'K2']);
+  await new Promise((res) => tc[0].socket.emit('lobby:start', res));
+  await waitFor(() => tc.every((t) => t.state?.phase === 'pick'), 'topcard pick');
+  assert.strictEqual(tc[0].state.myHand.length, 6, 'main de 6 cartes');
+  tc[0].socket.emit('game:action', { type: 'play', payload: { value: 6 } });
+  tc[1].socket.emit('game:action', { type: 'play', payload: { value: 1 } });
+  await waitFor(() => tc.every((t) => t.state?.phase === 'reveal'), 'topcard reveal', 4000);
+  assert.ok(tc[0].state.reveal.find((r: any) => r.value === 6)?.won, 'la carte 6 gagne');
+  console.log('✓ Plus Haute Carte: la plus haute carte remporte la manche');
+
+  // ---- Scénario 19 : Question Populaire -----------------------------------
+  console.log('\n--- Question Populaire ---');
+  const po = await makeRoom('popular', ['V1', 'V2', 'V3']);
+  await new Promise((res) => po[0].socket.emit('lobby:start', res));
+  await waitFor(() => po.every((t) => t.state?.phase === 'question'), 'popular question');
+  po.forEach((t) => t.socket.emit('game:action', { type: 'vote', payload: { option: 0 } }));
+  await waitFor(() => po.every((t) => t.state?.phase === 'reveal'), 'popular reveal', 4000);
+  assert.strictEqual(po[0].state.counts[0], 3, '3 votes sur la même option');
+  assert.ok(po[0].state.leaderboard.some((p: any) => p.score === 2), 'majorité = +2 points');
+  console.log('✓ Question Populaire: vote majoritaire récompensé');
+
   console.log('\nALL ENGINE TESTS PASSED ✅');
-  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc, ...tf, ...ag, ...cf, ...ng, ...md, ...eq, ...st, ...mo].forEach((t) => t.socket.close());
+  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc, ...tf, ...ag, ...cf, ...ng, ...md, ...eq, ...st, ...mo, ...si, ...hm, ...tc, ...po].forEach((t) => t.socket.close());
   ioServer.close();
   server.close();
   await sleep(150);

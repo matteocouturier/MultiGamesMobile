@@ -14,6 +14,10 @@ import { MathDuelView } from './mathDuel/MathDuelView';
 import { EmojiQuizView } from './emojiQuiz/EmojiQuizView';
 import { StroopView } from './stroop/StroopView';
 import { MorpionView } from './morpion/MorpionView';
+import { SimonView } from './simon/SimonView';
+import { HangmanView } from './hangman/HangmanView';
+import { TopCardView } from './topCard/TopCardView';
+import { PopularView } from './popular/PopularView';
 
 /**
  * Maps a gameId to its in-game view component. Mirror of the server-side game
@@ -35,4 +39,8 @@ export const GAME_VIEWS: Record<string, React.ComponentType<{ state: any }>> = {
   'emoji-quiz': EmojiQuizView,
   'stroop': StroopView,
   'morpion': MorpionView,
+  'simon': SimonView,
+  'hangman': HangmanView,
+  'top-card': TopCardView,
+  'popular': PopularView,
 };
