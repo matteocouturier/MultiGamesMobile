@@ -23,6 +23,10 @@ import { simonModule } from './simon';
 import { hangmanModule } from './hangman';
 import { topCardModule } from './topCard';
 import { popularModule } from './popular';
+import { connect4Module } from './connect4';
+import { memoryModule } from './memory';
+import { intruderModule } from './intruder';
+import { pressLuckModule } from './pressLuck';
 
 export function registerGames(): void {
   registry.register(guessTheWordModule);
@@ -44,5 +48,9 @@ export function registerGames(): void {
   registry.register(hangmanModule);
   registry.register(topCardModule);
   registry.register(popularModule);
+  registry.register(connect4Module);
+  registry.register(memoryModule);
+  registry.register(intruderModule);
+  registry.register(pressLuckModule);
   // registry.register(nextGameModule);  <-- future games go here
 }

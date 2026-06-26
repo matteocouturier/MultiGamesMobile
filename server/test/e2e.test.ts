@@ -345,8 +345,54 @@ async function main() {
   assert.ok(po[0].state.leaderboard.some((p: any) => p.score === 2), 'majorité = +2 points');
   console.log('✓ Question Populaire: vote majoritaire récompensé');
 
+  // ---- Scénario 20 : Puissance 4 ------------------------------------------
+  console.log('\n--- Puissance 4 ---');
+  const c4 = await makeRoom('connect4', ['R', 'J']);
+  await new Promise((res) => c4[0].socket.emit('lobby:start', res));
+  await waitFor(() => c4.every((t) => t.state?.phase === 'playing'), 'c4 playing');
+  assert.strictEqual(c4[0].state.board.length, 42, 'plateau 7x6');
+  const c4first = c4.find((t) => t.state.myTurn)!;
+  const c4second = c4.find((t) => !t.state.myTurn)!;
+  c4first.socket.emit('game:action', { type: 'drop', payload: { col: 0 } });
+  await waitFor(() => c4second.state.myTurn === true, 'c4 turn passes');
+  assert.ok(c4second.state.board.filter((d: any) => d).length === 1, 'un jeton tombé');
+  console.log('✓ Puissance 4: jeton lâché, tour passé');
+
+  // ---- Scénario 21 : Memory -----------------------------------------------
+  console.log('\n--- Memory ---');
+  const me = await makeRoom('memory', ['Y1', 'Y2']);
+  await new Promise((res) => me[0].socket.emit('lobby:start', res));
+  await waitFor(() => me.every((t) => t.state?.phase === 'playing'), 'memory playing');
+  assert.strictEqual(me[0].state.cards.length, 16, '16 cartes (8 paires)');
+  const meTurn = me.find((t) => t.state.myTurn)!;
+  meTurn.socket.emit('game:action', { type: 'flip', payload: { index: 0 } });
+  await waitFor(() => meTurn.state.cards[0].value != null, 'carte retournée');
+  console.log('✓ Memory: carte retournée visible');
+
+  // ---- Scénario 22 : Devine l'intrus --------------------------------------
+  console.log('\n--- Devine l’intrus ---');
+  const it = await makeRoom('intruder', ['Z1', 'Z2']);
+  await new Promise((res) => it[0].socket.emit('lobby:start', res));
+  await waitFor(() => it.every((t) => t.state?.phase === 'question'), 'intruder question');
+  assert.strictEqual(it[0].state.items.length, 4, '4 éléments proposés');
+  assert.strictEqual(it[0].state.correctIndex, null, 'intrus caché');
+  it.forEach((t) => t.socket.emit('game:action', { type: 'answer', payload: { index: 0 } }));
+  await waitFor(() => it.every((t) => t.state?.phase === 'reveal'), 'intruder reveal', 4000);
+  assert.notStrictEqual(it[0].state.correctIndex, null, 'intrus révélé');
+  console.log('✓ Devine l’intrus: 4 éléments, intrus révélé');
+
+  // ---- Scénario 23 : Stop ou Encore ---------------------------------------
+  console.log('\n--- Stop ou Encore ---');
+  const pl = await makeRoom('press-luck', ['W1', 'W2']);
+  await new Promise((res) => pl[0].socket.emit('lobby:start', res));
+  await waitFor(() => pl.every((t) => t.state?.phase === 'play'), 'pressluck play');
+  assert.strictEqual(pl[0].state.myStatus, 'active', 'départ actif');
+  pl.forEach((t) => t.socket.emit('game:action', { type: 'bank' }));
+  await waitFor(() => pl.every((t) => t.state?.phase === 'result'), 'pressluck resolved', 4000);
+  console.log('✓ Stop ou Encore: tous "Stop" -> manche résolue');
+
   console.log('\nALL ENGINE TESTS PASSED ✅');
-  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc, ...tf, ...ag, ...cf, ...ng, ...md, ...eq, ...st, ...mo, ...si, ...hm, ...tc, ...po].forEach((t) => t.socket.close());
+  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc, ...tf, ...ag, ...cf, ...ng, ...md, ...eq, ...st, ...mo, ...si, ...hm, ...tc, ...po, ...c4, ...me, ...it, ...pl].forEach((t) => t.socket.close());
   ioServer.close();
   server.close();
   await sleep(150);

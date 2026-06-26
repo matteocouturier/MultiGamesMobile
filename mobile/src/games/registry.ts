@@ -18,6 +18,10 @@ import { SimonView } from './simon/SimonView';
 import { HangmanView } from './hangman/HangmanView';
 import { TopCardView } from './topCard/TopCardView';
 import { PopularView } from './popular/PopularView';
+import { Connect4View } from './connect4/Connect4View';
+import { MemoryView } from './memory/MemoryView';
+import { IntruderView } from './intruder/IntruderView';
+import { PressLuckView } from './pressLuck/PressLuckView';
 
 /**
  * Maps a gameId to its in-game view component. Mirror of the server-side game
@@ -43,4 +47,8 @@ export const GAME_VIEWS: Record<string, React.ComponentType<{ state: any }>> = {
   'hangman': HangmanView,
   'top-card': TopCardView,
   'popular': PopularView,
+  'connect4': Connect4View,
+  'memory': MemoryView,
+  'intruder': IntruderView,
+  'press-luck': PressLuckView,
 };
