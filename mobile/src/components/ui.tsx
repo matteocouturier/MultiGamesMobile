@@ -182,7 +182,7 @@ export function Pill({
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
+  screen: { flex: 1, overflow: 'hidden' },
   screenInner: { flex: 1, paddingHorizontal: theme.spacing(2.5), paddingTop: theme.spacing(7) },
   orb: { position: 'absolute', width: 320, height: 320, borderRadius: 320, opacity: 0.22 },
   title: {

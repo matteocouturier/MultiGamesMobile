@@ -108,13 +108,63 @@ export function toggleTheme(): void {
   setThemeMode(themeMode === 'light' ? 'dark' : 'light');
 }
 
-// Web only: paint the document background to match the active palette so there
-// is no colour flash before the app mounts (and overscroll matches).
+// Web only: make it behave like a native app — lock the viewport (no pinch /
+// double-tap zoom), fill the screen, no rubber-band scroll, and paint the
+// document background to match the active palette (no colour flash).
 try {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const doc = (globalThis as any)?.document;
-  if (doc?.body) doc.body.style.backgroundColor = theme.colors.bg;
-  if (doc?.documentElement) doc.documentElement.style.backgroundColor = theme.colors.bg;
+  if (doc) {
+    let vp = doc.querySelector('meta[name="viewport"]');
+    if (!vp) {
+      vp = doc.createElement('meta');
+      vp.setAttribute('name', 'viewport');
+      doc.head.appendChild(vp);
+    }
+    vp.setAttribute(
+      'content',
+      'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover'
+    );
+
+    // PWA / "add to home screen" -> full-screen standalone app, no browser chrome.
+    const metas: [string, string, boolean][] = [
+      ['apple-mobile-web-app-capable', 'yes', false],
+      ['mobile-web-app-capable', 'yes', false],
+      ['apple-mobile-web-app-status-bar-style', 'black-translucent', false],
+      ['apple-mobile-web-app-title', 'MultiGames', false],
+      ['theme-color', theme.colors.bg, false],
+    ];
+    for (const [name, content] of metas) {
+      let m = doc.querySelector(`meta[name="${name}"]`);
+      if (!m) {
+        m = doc.createElement('meta');
+        m.setAttribute('name', name);
+        doc.head.appendChild(m);
+      }
+      m.setAttribute('content', content);
+    }
+
+    const style = doc.createElement('style');
+    style.innerHTML = `
+      html, body, #root {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: ${theme.colors.bg};
+        overscroll-behavior: none;
+      }
+      body {
+        position: fixed;
+        width: 100%;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        touch-action: manipulation;
+      }
+      * { -webkit-tap-highlight-color: transparent; }
+    `;
+    doc.head.appendChild(style);
+  }
 } catch {
   /* native: no document */
 }
