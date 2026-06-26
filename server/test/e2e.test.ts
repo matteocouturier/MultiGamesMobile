@@ -49,7 +49,7 @@ async function main() {
   setTimeout(() => {
     console.error('HARD TIMEOUT — aborting');
     process.exit(2);
-  }, 18000).unref();
+  }, 30000).unref();
   registerGames();
   const app = express();
   const server = http.createServer(app);
@@ -113,8 +113,39 @@ async function main() {
   assert.ok(referee.events.some((e) => e.type === 'found'), 'found event emitted');
   console.log('✓ referee "found" => +1 score and event broadcast');
 
+  // ---- Scénario 2 : La Bombe à mots (jeu solo, 2 joueurs) -----------------
+  console.log('\n--- Word Bomb ---');
+  const wbHost = track();
+  await connected(wbHost.socket);
+  const wbCreated: any = await ack(wbHost.socket, 'lobby:create', {
+    playerName: 'Zoe',
+    gameId: 'word-bomb',
+  });
+  assert.ok(wbCreated.ok, 'wb room created');
+  const wbCode = wbCreated.data.code;
+  const wbGuest = track();
+  await connected(wbGuest.socket);
+  await ack(wbGuest.socket, 'lobby:join', { playerName: 'Yann', code: wbCode });
+
+  await waitFor(() => wbHost.room?.players.length === 2 && !!wbHost.room?.canStart, 'wb 2 players');
+  console.log('✓ Word Bomb: 2 joueurs, canStart');
+
+  const wbStart: any = await new Promise((res) => wbHost.socket.emit('lobby:start', res));
+  assert.ok(wbStart.ok, 'wb start ok');
+  const wb = [wbHost, wbGuest];
+  await waitFor(() => wb.every((t) => t.state?.phase === 'playing'), 'wb playing');
+
+  const turnT = wb.find((t) => t.state.myTurn);
+  assert.ok(turnT, 'a player has the turn');
+  const usedBefore = turnT!.state.usedCount;
+  const frag = turnT!.state.fragment as string;
+  turnT!.socket.emit('game:action', { type: 'submit', payload: { word: frag.toLowerCase() + 'a' } });
+  await waitFor(() => turnT!.state.usedCount > usedBefore, 'valid word accepted');
+  assert.ok(turnT!.events.some((e) => e.type === 'ok'), 'ok event emitted');
+  console.log('✓ Word Bomb: mot valide accepté + tour suivant');
+
   console.log('\nALL ENGINE TESTS PASSED ✅');
-  all.forEach((t) => t.socket.close());
+  [...all, wbHost, wbGuest].forEach((t) => t.socket.close());
   ioServer.close();
   server.close();
   await sleep(150);

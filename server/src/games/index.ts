@@ -5,8 +5,10 @@
 
 import { registry } from '../core/registry';
 import { guessTheWordModule } from './guessTheWord';
+import { wordBombModule } from './wordBomb';
 
 export function registerGames(): void {
   registry.register(guessTheWordModule);
+  registry.register(wordBombModule);
   // registry.register(nextGameModule);  <-- future games go here
 }

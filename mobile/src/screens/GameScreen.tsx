@@ -5,11 +5,30 @@ import { theme } from '../theme';
 import { useStore } from '../state/store';
 import { GAME_VIEWS } from '../games/registry';
 
-const EVENT_TEXT: Record<string, { text: string; color: string }> = {
-  found: { text: '✓ Mot trouvé !', color: theme.colors.success },
-  pass: { text: '→ Passé', color: theme.colors.textMuted },
-  foul: { text: '⚠ Faute !', color: theme.colors.warning },
-};
+type EventInfo = { text: string; color: string };
+
+// Resolve a toast (text + color) from a game event. Covers all games; new games
+// can emit their own event types and add a case here.
+function resolveEvent(event: { type: string; payload?: any } | null): EventInfo | null {
+  if (!event) return null;
+  const p = event.payload ?? {};
+  switch (event.type) {
+    case 'found':
+      return { text: '✓ Mot trouvé !', color: theme.colors.success };
+    case 'pass':
+      return { text: '→ Passé', color: theme.colors.textMuted };
+    case 'foul':
+      return { text: '⚠ Faute !', color: theme.colors.warning };
+    case 'ok':
+      return { text: p.word ? `✓ ${p.word}` : '✓ Validé', color: theme.colors.success };
+    case 'boom':
+      return { text: `💥 ${p.name ?? ''} explose !`, color: theme.colors.danger };
+    case 'invalid':
+      return { text: `✗ ${p.reason ?? 'invalide'}`, color: theme.colors.warning };
+    default:
+      return null;
+  }
+}
 
 export function GameScreen() {
   const { room, gameState, lastEvent, leaveRoom } = useStore();
@@ -49,7 +68,7 @@ function Toast({ event }: { event: { type: string } | null }) {
   }, [event, opacity, translateY]);
 
   if (!event) return null;
-  const info = EVENT_TEXT[event.type];
+  const info = resolveEvent(event);
   if (!info) return null;
 
   return (

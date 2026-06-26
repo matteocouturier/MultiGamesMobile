@@ -1,5 +1,6 @@
 import React from 'react';
 import { GuessTheWordView } from './guessTheWord/GuessTheWordView';
+import { WordBombView } from './wordBomb/WordBombView';
 
 /**
  * Maps a gameId to its in-game view component. Mirror of the server-side game
@@ -7,4 +8,5 @@ import { GuessTheWordView } from './guessTheWord/GuessTheWordView';
  */
 export const GAME_VIEWS: Record<string, React.ComponentType<{ state: any }>> = {
   'guess-the-word': GuessTheWordView,
+  'word-bomb': WordBombView,
 };
