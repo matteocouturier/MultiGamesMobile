@@ -1,0 +1,17 @@
+# Render Blueprint — déploie le serveur en 1 clic.
+# 1. Pousse ce repo sur GitHub (déjà fait).
+# 2. Sur https://render.com -> New -> Blueprint -> sélectionne ce repo.
+# 3. Render lit ce fichier, build le Dockerfile et héberge le serveur.
+# L'URL publique (https://...onrender.com) supporte les WebSockets/Socket.IO.
+services:
+  - type: web
+    name: multigames-server
+    runtime: docker
+    rootDir: server
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
