@@ -10,6 +10,10 @@ import { TrueFalseView } from './trueFalse/TrueFalseView';
 import { AnagramView } from './anagram/AnagramView';
 import { ChifoumiView } from './chifoumi/ChifoumiView';
 import { NumberGuessView } from './numberGuess/NumberGuessView';
+import { MathDuelView } from './mathDuel/MathDuelView';
+import { EmojiQuizView } from './emojiQuiz/EmojiQuizView';
+import { StroopView } from './stroop/StroopView';
+import { MorpionView } from './morpion/MorpionView';
 
 /**
  * Maps a gameId to its in-game view component. Mirror of the server-side game
@@ -27,4 +31,8 @@ export const GAME_VIEWS: Record<string, React.ComponentType<{ state: any }>> = {
   'anagram': AnagramView,
   'chifoumi': ChifoumiView,
   'number-guess': NumberGuessView,
+  'math-duel': MathDuelView,
+  'emoji-quiz': EmojiQuizView,
+  'stroop': StroopView,
+  'morpion': MorpionView,
 };

@@ -68,7 +68,7 @@ async function main() {
   setTimeout(() => {
     console.error('HARD TIMEOUT — aborting');
     process.exit(2);
-  }, 30000).unref();
+  }, 50000).unref();
   registerGames();
   const app = express();
   const server = http.createServer(app);
@@ -264,8 +264,48 @@ async function main() {
   assert.ok(ng[0].state.leaderboard.some((p: any) => p.score > 0), 'le plus proche a marqué');
   console.log('✓ La Question: réponse révélée, le plus proche marque');
 
+  // ---- Scénario 12 : Calcul Mental ----------------------------------------
+  console.log('\n--- Calcul Mental ---');
+  const md = await makeRoom('math-duel', ['M1', 'M2']);
+  await new Promise((res) => md[0].socket.emit('lobby:start', res));
+  await waitFor(() => md.every((t) => t.state?.phase === 'round'), 'md round');
+  assert.ok(md[0].state.problem.length > 0, 'un calcul est affiché');
+  console.log('✓ Calcul Mental: problème distribué');
+
+  // ---- Scénario 13 : Quiz Emoji -------------------------------------------
+  console.log('\n--- Quiz Emoji ---');
+  const eq = await makeRoom('emoji-quiz', ['E1', 'E2']);
+  await new Promise((res) => eq[0].socket.emit('lobby:start', res));
+  await waitFor(() => eq.every((t) => t.state?.phase === 'question'), 'eq question');
+  assert.strictEqual(eq[0].state.correctIndex, null, 'réponse cachée');
+  eq.forEach((t) => t.socket.emit('game:action', { type: 'answer', payload: { index: 0 } }));
+  await waitFor(() => eq.every((t) => t.state?.phase === 'reveal'), 'eq reveal', 4000);
+  assert.notStrictEqual(eq[0].state.correctIndex, null, 'réponse révélée');
+  console.log('✓ Quiz Emoji: énigme emojis -> révélation');
+
+  // ---- Scénario 14 : Couleur-Mot ------------------------------------------
+  console.log('\n--- Couleur-Mot ---');
+  const st = await makeRoom('stroop', ['S1', 'S2']);
+  await new Promise((res) => st[0].socket.emit('lobby:start', res));
+  await waitFor(() => st.every((t) => t.state?.phase === 'round'), 'stroop round');
+  assert.strictEqual(st[0].state.options.length, 4, '4 couleurs proposées');
+  assert.ok(st[0].state.inkHex.startsWith('#'), 'couleur d’encre fournie');
+  console.log('✓ Couleur-Mot: mot coloré + 4 options');
+
+  // ---- Scénario 15 : Morpion ----------------------------------------------
+  console.log('\n--- Morpion ---');
+  const mo = await makeRoom('morpion', ['X', 'O']);
+  await new Promise((res) => mo[0].socket.emit('lobby:start', res));
+  await waitFor(() => mo.every((t) => t.state?.phase === 'playing'), 'morpion playing');
+  const first = mo.find((t) => t.state.myTurn)!;
+  const second = mo.find((t) => !t.state.myTurn)!;
+  first.socket.emit('game:action', { type: 'play', payload: { cell: 0 } });
+  await waitFor(() => second.state.myTurn === true, 'turn passes after a move');
+  assert.ok(second.state.board.filter((c: any) => c).length === 1, 'un symbole posé');
+  console.log('✓ Morpion: coup joué, tour passé à l’adversaire');
+
   console.log('\nALL ENGINE TESTS PASSED ✅');
-  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc, ...tf, ...ag, ...cf, ...ng].forEach((t) => t.socket.close());
+  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc, ...tf, ...ag, ...cf, ...ng, ...md, ...eq, ...st, ...mo].forEach((t) => t.socket.close());
   ioServer.close();
   server.close();
   await sleep(150);
