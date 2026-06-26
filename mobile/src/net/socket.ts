@@ -13,6 +13,12 @@ export function resolveServerUrl(): string {
   const fromEnv = process.env.EXPO_PUBLIC_SERVER_URL;
   if (fromEnv) return fromEnv;
 
+  // When the web build is served by the game server itself, talk to the same
+  // origin — works on any domain (644.fr, an IP, localhost) with no config.
+  if (typeof window !== 'undefined' && window.location?.origin?.startsWith('http')) {
+    return window.location.origin;
+  }
+
   const configured = (Constants.expoConfig?.extra as any)?.serverUrl as string | undefined;
 
   // Try to reuse the Metro/Expo host IP so physical devices can reach the LAN.
@@ -29,7 +35,7 @@ let socket: AppSocket | null = null;
 export function getSocket(): AppSocket {
   if (!socket) {
     socket = io(resolveServerUrl(), {
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
       autoConnect: true,
       reconnection: true,
     });

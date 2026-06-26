@@ -1,4 +1,6 @@
 import http from 'http';
+import path from 'path';
+import fs from 'fs';
 import express from 'express';
 import cors from 'cors';
 import { Server } from 'socket.io';
@@ -36,11 +38,20 @@ const manager = attachSocketServer(io);
 
 app.get('/stats', (_req, res) => res.json(manager.stats()));
 
-// Simple landing page so hitting the URL in a browser shows a clean status
-// rather than "Cannot GET /". This is a real-time backend, not a website.
-app.get('/', (_req, res) => {
-  const { rooms, players } = manager.stats();
-  res.type('html').send(`<!doctype html>
+// Serve the compiled web app (Expo web export) if it's bundled with the server.
+// This makes the game playable directly in the browser from the same origin —
+// no separate hosting, no app install. Falls back to a status page in dev.
+const PUBLIC_DIR = process.env.PUBLIC_DIR || path.join(__dirname, '..', 'public');
+const hasWebApp = fs.existsSync(path.join(PUBLIC_DIR, 'index.html'));
+
+if (hasWebApp) {
+  app.use(express.static(PUBLIC_DIR));
+  // SPA fallback: any non-API route returns the app shell.
+  app.get('*', (_req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
+} else {
+  app.get('/', (_req, res) => {
+    const { rooms, players } = manager.stats();
+    res.type('html').send(`<!doctype html>
 <html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MultiGames · Serveur</title>
@@ -60,7 +71,8 @@ app.get('/', (_req, res) => {
     <div class="stat"><b>${players}</b><span>joueurs connectés</span></div>
   </div>
 </div></body></html>`);
-});
+  });
+}
 
 server.listen(PORT, () => {
   console.log(`🎮 MultiGames server listening on :${PORT}`);

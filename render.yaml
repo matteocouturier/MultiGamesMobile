@@ -7,7 +7,6 @@ services:
   - type: web
     name: multigames-server
     runtime: docker
-    rootDir: server
     dockerfilePath: ./Dockerfile
     plan: free
     healthCheckPath: /health

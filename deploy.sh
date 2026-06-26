@@ -7,10 +7,10 @@ set -euo pipefail
 PORT_PUBLIC="${PORT_PUBLIC:-80}"   # port public (80 par défaut)
 NAME="multigames"
 
-# Se placer dans le dossier du script puis dans server/
-cd "$(dirname "$0")/server"
+# Se placer à la racine du repo (le Dockerfile racine compile l'app web + le serveur).
+cd "$(dirname "$0")"
 
-echo "==> Build de l'image Docker..."
+echo "==> Build de l'image Docker (app web + serveur)..."
 docker build -t multigames-server .
 
 echo "==> (Re)lancement du conteneur sur le port ${PORT_PUBLIC}..."
