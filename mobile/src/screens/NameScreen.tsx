@@ -64,7 +64,7 @@ export function NameScreen() {
 
 const styles = StyleSheet.create({
   center: { justifyContent: 'center', paddingBottom: theme.spacing(8) },
-  toggleWrap: { position: 'absolute', top: 0, right: 0 },
+  toggleWrap: { position: 'absolute', top: theme.spacing(3), right: theme.spacing(1) },
   logoWrap: { alignItems: 'center', marginBottom: theme.spacing(2) },
   logoGlow: {
     width: 110,
