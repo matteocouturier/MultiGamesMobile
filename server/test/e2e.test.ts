@@ -221,8 +221,51 @@ async function main() {
   assert.ok(minority, "l'undercover a le mot minoritaire");
   console.log('✓ Undercover: rôles assignés (1 mot minoritaire pour l’imposteur)');
 
+  // ---- Scénario 8 : Vrai ou Faux ------------------------------------------
+  console.log('\n--- Vrai ou Faux ---');
+  const tf = await makeRoom('true-false', ['T1', 'T2']);
+  await new Promise((res) => tf[0].socket.emit('lobby:start', res));
+  await waitFor(() => tf.every((t) => t.state?.phase === 'question'), 'tf question');
+  assert.strictEqual(tf[0].state.correct, null, 'answer hidden');
+  tf.forEach((t) => t.socket.emit('game:action', { type: 'answer', payload: { value: true } }));
+  await waitFor(() => tf.every((t) => t.state?.phase === 'reveal'), 'tf reveal', 4000);
+  assert.notStrictEqual(tf[0].state.correct, null, 'answer revealed');
+  console.log('✓ Vrai ou Faux: réponse cachée puis révélée');
+
+  // ---- Scénario 9 : Anagrammes --------------------------------------------
+  console.log('\n--- Anagrammes ---');
+  const ag = await makeRoom('anagram', ['A1', 'A2']);
+  await new Promise((res) => ag[0].socket.emit('lobby:start', res));
+  await waitFor(() => ag.every((t) => t.state?.phase === 'round'), 'ag round');
+  assert.ok(ag[0].state.scrambled.length >= 4, 'lettres mélangées affichées');
+  console.log('✓ Anagrammes: mot mélangé distribué');
+
+  // ---- Scénario 10 : Chifoumi ---------------------------------------------
+  console.log('\n--- Chifoumi ---');
+  const cf = await makeRoom('chifoumi', ['C1', 'C2']);
+  await new Promise((res) => cf[0].socket.emit('lobby:start', res));
+  await waitFor(() => cf.every((t) => t.state?.phase === 'pick'), 'cf pick');
+  cf[0].socket.emit('game:action', { type: 'pick', payload: { choice: 'rock' } });
+  cf[1].socket.emit('game:action', { type: 'pick', payload: { choice: 'scissors' } });
+  await waitFor(() => cf.every((t) => t.state?.phase === 'reveal'), 'cf reveal', 4000);
+  const rockEntry = cf[0].state.reveal.find((r: any) => r.choice === 'rock');
+  assert.strictEqual(rockEntry.roundPts, 1, 'pierre bat ciseaux (+1)');
+  console.log('✓ Chifoumi: pierre bat ciseaux');
+
+  // ---- Scénario 11 : La Question ------------------------------------------
+  console.log('\n--- La Question ---');
+  const ng = await makeRoom('number-guess', ['N1', 'N2']);
+  await new Promise((res) => ng[0].socket.emit('lobby:start', res));
+  await waitFor(() => ng.every((t) => t.state?.phase === 'question'), 'ng question');
+  ng[0].socket.emit('game:action', { type: 'guess', payload: { value: 100 } });
+  ng[1].socket.emit('game:action', { type: 'guess', payload: { value: 5000 } });
+  await waitFor(() => ng.every((t) => t.state?.phase === 'reveal'), 'ng reveal', 4000);
+  assert.notStrictEqual(ng[0].state.answer, null, 'réponse révélée');
+  assert.ok(ng[0].state.leaderboard.some((p: any) => p.score > 0), 'le plus proche a marqué');
+  console.log('✓ La Question: réponse révélée, le plus proche marque');
+
   console.log('\nALL ENGINE TESTS PASSED ✅');
-  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc].forEach((t) => t.socket.close());
+  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc, ...tf, ...ag, ...cf, ...ng].forEach((t) => t.socket.close());
   ioServer.close();
   server.close();
   await sleep(150);

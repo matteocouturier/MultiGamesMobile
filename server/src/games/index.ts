@@ -11,6 +11,10 @@ import { reflexModule } from './reflex';
 import { higherLowerModule } from './higherLower';
 import { petitBacModule } from './petitBac';
 import { undercoverModule } from './undercover';
+import { trueFalseModule } from './trueFalse';
+import { anagramModule } from './anagram';
+import { chifoumiModule } from './chifoumi';
+import { numberGuessModule } from './numberGuess';
 
 export function registerGames(): void {
   registry.register(guessTheWordModule);
@@ -20,5 +24,9 @@ export function registerGames(): void {
   registry.register(higherLowerModule);
   registry.register(petitBacModule);
   registry.register(undercoverModule);
+  registry.register(trueFalseModule);
+  registry.register(anagramModule);
+  registry.register(chifoumiModule);
+  registry.register(numberGuessModule);
   // registry.register(nextGameModule);  <-- future games go here
 }

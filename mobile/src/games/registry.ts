@@ -6,6 +6,10 @@ import { ReflexView } from './reflex/ReflexView';
 import { HigherLowerView } from './higherLower/HigherLowerView';
 import { PetitBacView } from './petitBac/PetitBacView';
 import { UndercoverView } from './undercover/UndercoverView';
+import { TrueFalseView } from './trueFalse/TrueFalseView';
+import { AnagramView } from './anagram/AnagramView';
+import { ChifoumiView } from './chifoumi/ChifoumiView';
+import { NumberGuessView } from './numberGuess/NumberGuessView';
 
 /**
  * Maps a gameId to its in-game view component. Mirror of the server-side game
@@ -19,4 +23,8 @@ export const GAME_VIEWS: Record<string, React.ComponentType<{ state: any }>> = {
   'higher-lower': HigherLowerView,
   'petit-bac': PetitBacView,
   'undercover': UndercoverView,
+  'true-false': TrueFalseView,
+  'anagram': AnagramView,
+  'chifoumi': ChifoumiView,
+  'number-guess': NumberGuessView,
 };
