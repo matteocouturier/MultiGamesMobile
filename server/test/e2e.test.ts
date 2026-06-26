@@ -67,7 +67,10 @@ async function main() {
   assert.ok(created.ok, 'create ok');
   const code = created.data.code;
   assert.match(code, /^[A-Z]{6}$/, '6-letter code');
-  console.log('✓ room created', code);
+  // Regression: the host must receive the room state immediately after creating,
+  // before anyone else joins (the first broadcast happens pre-join).
+  await waitFor(() => host.room?.code === code && host.room.players.length === 1, 'host sees own room');
+  console.log('✓ room created + host received initial room state', code);
 
   const guests: Tracked[] = [];
   for (const name of ['Bob', 'Chloé', 'Driss']) {
