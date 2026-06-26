@@ -13,15 +13,21 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     },
     "android": {
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "backgroundColor": "#0E0B1E"
       }
     },
     "extra": {
-      "serverUrl": "http://localhost:4000"
+      "serverUrl": "http://644.fr:8080"
     }
   }
 }
