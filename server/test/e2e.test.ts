@@ -185,8 +185,44 @@ async function main() {
   assert.strictEqual(rx[1].state.myFalseStart, false, 'other player not penalised');
   console.log('✓ Réflexe: tap trop tôt = faux départ (verrouillé pour la manche)');
 
+  // ---- Scénario 5 : Plus ou Moins -----------------------------------------
+  console.log('\n--- Plus ou Moins ---');
+  const hl = await makeRoom('higher-lower', ['H1', 'H2']);
+  await new Promise((res) => hl[0].socket.emit('lobby:start', res));
+  await waitFor(() => hl.every((t) => t.state?.phase === 'playing'), 'hl playing');
+  hl[0].socket.emit('game:action', { type: 'guess', payload: { value: 50 } });
+  await waitFor(() => hl[1].state.lastGuess != null, 'hl hint broadcast');
+  assert.ok(['higher', 'lower'].includes(hl[1].state.lastGuess.hint), 'plus/moins hint');
+  console.log('✓ Plus ou Moins: indice plus/moins diffusé');
+
+  // ---- Scénario 6 : Petit Bac ---------------------------------------------
+  console.log('\n--- Petit Bac ---');
+  const pb = await makeRoom('petit-bac', ['P1', 'P2']);
+  await new Promise((res) => pb[0].socket.emit('lobby:start', res));
+  await waitFor(() => pb.every((t) => t.state?.phase === 'play'), 'pb play');
+  const L = pb[0].state.letter.toLowerCase();
+  const cats = pb[0].state.categories.length;
+  pb[0].socket.emit('game:action', { type: 'submit', payload: { answers: Array(cats).fill(L + 'aa') } });
+  pb[1].socket.emit('game:action', { type: 'submit', payload: { answers: Array(cats).fill(L + 'bb') } });
+  await waitFor(() => pb.every((t) => t.state?.phase === 'reveal'), 'pb reveal', 4000);
+  const p1res = pb[0].state.results.find((r: any) => r.name === 'P1');
+  assert.strictEqual(p1res.total, cats * 2, 'réponses valides et uniques = 2 pts chacune');
+  console.log('✓ Petit Bac: scoring auto (unique = 2 pts)');
+
+  // ---- Scénario 7 : Undercover --------------------------------------------
+  console.log('\n--- Undercover ---');
+  const uc = await makeRoom('undercover', ['U1', 'U2', 'U3']);
+  await new Promise((res) => uc[0].socket.emit('lobby:start', res));
+  await waitFor(() => uc.every((t) => t.state?.phase === 'reveal'), 'uc reveal');
+  const uwords = uc.map((t) => t.state.myWord);
+  assert.ok(uwords.every((w) => typeof w === 'string' && w.length > 0), 'each player has a secret word');
+  assert.strictEqual(new Set(uwords).size, 2, '2 mots distincts (civils + undercover)');
+  const minority = uwords.find((w) => uwords.filter((x) => x === w).length === 1);
+  assert.ok(minority, "l'undercover a le mot minoritaire");
+  console.log('✓ Undercover: rôles assignés (1 mot minoritaire pour l’imposteur)');
+
   console.log('\nALL ENGINE TESTS PASSED ✅');
-  [...all, wbHost, wbGuest, ...qz, ...rx].forEach((t) => t.socket.close());
+  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc].forEach((t) => t.socket.close());
   ioServer.close();
   server.close();
   await sleep(150);

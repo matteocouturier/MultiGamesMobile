@@ -3,6 +3,9 @@ import { GuessTheWordView } from './guessTheWord/GuessTheWordView';
 import { WordBombView } from './wordBomb/WordBombView';
 import { QuizView } from './quiz/QuizView';
 import { ReflexView } from './reflex/ReflexView';
+import { HigherLowerView } from './higherLower/HigherLowerView';
+import { PetitBacView } from './petitBac/PetitBacView';
+import { UndercoverView } from './undercover/UndercoverView';
 
 /**
  * Maps a gameId to its in-game view component. Mirror of the server-side game
@@ -13,4 +16,7 @@ export const GAME_VIEWS: Record<string, React.ComponentType<{ state: any }>> = {
   'word-bomb': WordBombView,
   'quiz': QuizView,
   'reflex': ReflexView,
+  'higher-lower': HigherLowerView,
+  'petit-bac': PetitBacView,
+  'undercover': UndercoverView,
 };

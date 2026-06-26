@@ -8,11 +8,17 @@ import { guessTheWordModule } from './guessTheWord';
 import { wordBombModule } from './wordBomb';
 import { quizModule } from './quiz';
 import { reflexModule } from './reflex';
+import { higherLowerModule } from './higherLower';
+import { petitBacModule } from './petitBac';
+import { undercoverModule } from './undercover';
 
 export function registerGames(): void {
   registry.register(guessTheWordModule);
   registry.register(wordBombModule);
   registry.register(quizModule);
   registry.register(reflexModule);
+  registry.register(higherLowerModule);
+  registry.register(petitBacModule);
+  registry.register(undercoverModule);
   // registry.register(nextGameModule);  <-- future games go here
 }
