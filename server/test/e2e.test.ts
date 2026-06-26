@@ -44,6 +44,25 @@ async function waitFor(pred: () => boolean, label: string, ms = 5000) {
   throw new Error('timeout waiting for: ' + label);
 }
 
+/** Create a room for `gameId` with the given player names and wait until full. */
+async function makeRoom(gameId: string, names: string[]): Promise<Tracked[]> {
+  const host = track();
+  await connected(host.socket);
+  const created: any = await ack(host.socket, 'lobby:create', { playerName: names[0], gameId });
+  if (!created.ok) throw new Error('create failed: ' + created.error);
+  const code = created.data.code;
+  const rest: Tracked[] = [];
+  for (const n of names.slice(1)) {
+    const g = track();
+    await connected(g.socket);
+    await ack(g.socket, 'lobby:join', { playerName: n, code });
+    rest.push(g);
+  }
+  const all = [host, ...rest];
+  await waitFor(() => host.room?.players.length === names.length, 'room filled ' + gameId);
+  return all;
+}
+
 async function main() {
   console.log('booting test server...');
   setTimeout(() => {
@@ -144,8 +163,30 @@ async function main() {
   assert.ok(turnT!.events.some((e) => e.type === 'ok'), 'ok event emitted');
   console.log('✓ Word Bomb: mot valide accepté + tour suivant');
 
+  // ---- Scénario 3 : Quiz Culture ------------------------------------------
+  console.log('\n--- Quiz ---');
+  const qz = await makeRoom('quiz', ['Q1', 'Q2']);
+  await new Promise((res) => qz[0].socket.emit('lobby:start', res));
+  await waitFor(() => qz.every((t) => t.state?.phase === 'question'), 'quiz question');
+  assert.ok(qz[0].state.question.length > 0 && qz[0].state.options.length === 4, 'question has 4 options');
+  assert.strictEqual(qz[0].state.correctIndex, null, 'correct answer hidden during question');
+  qz.forEach((t) => t.socket.emit('game:action', { type: 'answer', payload: { index: 0 } }));
+  await waitFor(() => qz.every((t) => t.state?.phase === 'reveal'), 'quiz reveal', 4000);
+  assert.notStrictEqual(qz[0].state.correctIndex, null, 'correct answer revealed');
+  console.log('✓ Quiz: question -> réponses -> révélation (réponse cachée puis dévoilée)');
+
+  // ---- Scénario 4 : Réflexe -----------------------------------------------
+  console.log('\n--- Réflexe ---');
+  const rx = await makeRoom('reflex', ['R1', 'R2']);
+  await new Promise((res) => rx[0].socket.emit('lobby:start', res));
+  await waitFor(() => rx.every((t) => t.state?.phase === 'arming'), 'reflex arming');
+  rx[0].socket.emit('game:action', { type: 'tap' }); // trop tôt -> faux départ
+  await waitFor(() => rx[0].state.myFalseStart === true, 'false start locked');
+  assert.strictEqual(rx[1].state.myFalseStart, false, 'other player not penalised');
+  console.log('✓ Réflexe: tap trop tôt = faux départ (verrouillé pour la manche)');
+
   console.log('\nALL ENGINE TESTS PASSED ✅');
-  [...all, wbHost, wbGuest].forEach((t) => t.socket.close());
+  [...all, wbHost, wbGuest, ...qz, ...rx].forEach((t) => t.socket.close());
   ioServer.close();
   server.close();
   await sleep(150);
