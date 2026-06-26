@@ -1,5 +1,6 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
+import { pickFresh } from '../shared/freshDeck';
 
 interface NQ { q: string; answer: number; unit?: string }
 const QUESTIONS: NQ[] = [
@@ -15,12 +16,25 @@ const QUESTIONS: NQ[] = [
   { q: 'Combien de minutes dans une journée ?', answer: 1440 },
   { q: 'Combien de dents a un adulte (avec les dents de sagesse) ?', answer: 32 },
   { q: 'Quelle est la vitesse max d’un guépard ?', answer: 110, unit: 'km/h' },
+  { q: 'Combien de pattes a une fourmi ?', answer: 6 },
+  { q: 'Combien d’années dure le mandat d’un président français ?', answer: 5, unit: 'ans' },
+  { q: 'Combien de continents sur Terre ?', answer: 7 },
+  { q: 'Combien de cases sur un échiquier ?', answer: 64 },
+  { q: 'En quelle année a coulé le Titanic ?', answer: 1912 },
+  { q: 'Combien de planètes dans le système solaire ?', answer: 8 },
+  { q: 'Combien de litres de sang dans le corps humain (environ) ?', answer: 5, unit: 'L' },
+  { q: 'Quelle est la longueur d’un marathon ?', answer: 42, unit: 'km' },
+  { q: 'Combien de cordes sur un violon ?', answer: 4 },
+  { q: 'À combien de km/h roule un TGV en moyenne ?', answer: 300, unit: 'km/h' },
+  { q: 'Combien de joueurs sur un terrain de rugby (par équipe) ?', answer: 15 },
+  { q: 'Combien d’années dans un siècle ?', answer: 100, unit: 'ans' },
+  { q: 'Combien d’étoiles sur le drapeau européen ?', answer: 12 },
+  { q: 'Combien de degrés dans un cercle ?', answer: 360, unit: '°' },
+  { q: 'Combien de chromosomes possède l’humain ?', answer: 46 },
 ];
 const ROUNDS = 5;
 const TIME = 20;
 const REVEAL = 6;
-
-function shuffle<T>(a: T[]): T[] { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; }
 
 /** La Question — devine la valeur numérique. Le plus proche marque le plus de points. */
 export class NumberGuessGame implements GameInstance {
@@ -36,7 +50,7 @@ export class NumberGuessGame implements GameInstance {
 
   start(): void {
     for (const p of this.ctx.players()) { this.scores.set(p.id, 0); this.names.set(p.id, p.name); }
-    this.deck = shuffle(QUESTIONS).slice(0, ROUNDS);
+    this.deck = pickFresh(`number-guess:${this.ctx.roomCode}`, QUESTIONS, ROUNDS, (q) => q.q);
     this.begin();
     this.ctx.setInterval(() => this.tick(), 1000);
   }

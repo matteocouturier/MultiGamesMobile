@@ -1,6 +1,7 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
-import { Question, QUESTIONS, shuffle } from './questions';
+import { Question, QUESTIONS } from './questions';
+import { pickFresh } from '../shared/freshDeck';
 
 const QUESTION_TIME = 15; // seconds to answer
 const REVEAL_TIME = 4; // seconds showing the answer
@@ -28,7 +29,7 @@ export class QuizGame implements GameInstance {
       this.scores.set(p.id, 0);
       this.names.set(p.id, p.name);
     }
-    this.deck = shuffle(QUESTIONS).slice(0, NB_QUESTIONS);
+    this.deck = pickFresh(`quiz:${this.ctx.roomCode}`, QUESTIONS, NB_QUESTIONS, (q) => q.q);
     this.beginQuestion();
     this.ctx.setInterval(() => this.tick(), 1000);
     this.tickStarted = true;

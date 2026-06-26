@@ -1,11 +1,17 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
+import { pickFresh } from '../shared/freshDeck';
 
 const WORDS = [
   'maison', 'jardin', 'orange', 'cheval', 'fenetre', 'voiture', 'montagne', 'banane',
   'lumiere', 'fromage', 'bouteille', 'ordinateur', 'telephone', 'chocolat', 'musique',
   'fleur', 'soleil', 'nuage', 'tortue', 'guitare', 'paysage', 'cuisine', 'voyage',
   'crayon', 'tableau', 'bonjour', 'famille', 'animal', 'plante', 'riviere',
+  'fenetre', 'ballon', 'bateau', 'avion', 'ecole', 'cahier', 'lecture', 'peinture',
+  'dauphin', 'requin', 'abeille', 'papillon', 'caillou', 'parapluie', 'horloge',
+  'fontaine', 'bibliotheque', 'aventure', 'dragon', 'sorciere', 'chateau', 'tresor',
+  'planete', 'galaxie', 'comete', 'desert', 'foret', 'cascade', 'volcan', 'sentier',
+  'casquette', 'echarpe', 'manteau', 'sandales', 'pantalon', 'chaussure',
 ];
 const ROUNDS = 6;
 const TIME = 30;
@@ -38,9 +44,7 @@ export class AnagramGame implements GameInstance {
 
   start(): void {
     for (const p of this.ctx.players()) { this.wins.set(p.id, 0); this.names.set(p.id, p.name); }
-    const pool = [...WORDS];
-    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-    this.deck = pool.slice(0, ROUNDS);
+    this.deck = pickFresh(`anagram:${this.ctx.roomCode}`, WORDS, ROUNDS, (w) => w);
     this.begin();
     this.ctx.setInterval(() => this.tick(), 1000);
   }

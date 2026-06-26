@@ -1,5 +1,6 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
+import { pickFresh } from '../shared/freshDeck';
 
 interface Statement { text: string; answer: boolean }
 const STATEMENTS: Statement[] = [
@@ -19,13 +20,29 @@ const STATEMENTS: Statement[] = [
   { text: 'Il est impossible d’éternuer les yeux ouverts.', answer: true },
   { text: 'Vénus est la planète la plus chaude du système solaire.', answer: true },
   { text: 'Les autruches cachent leur tête dans le sable quand elles ont peur.', answer: false },
+  { text: 'Un groupe de flamants roses s’appelle une "flamboyance".', answer: true },
+  { text: 'Le Mont Everest est la montagne la plus haute depuis sa base.', answer: false },
+  { text: 'Les escargots peuvent dormir pendant 3 ans.', answer: true },
+  { text: 'La lettre la plus utilisée en français est le "e".', answer: true },
+  { text: 'Les dauphins dorment avec un seul œil ouvert.', answer: true },
+  { text: 'Le cœur d’une crevette se trouve dans sa tête.', answer: true },
+  { text: 'Napoléon était extrêmement petit pour son époque.', answer: false },
+  { text: 'Il y a plus d’étoiles dans l’univers que de grains de sable sur Terre.', answer: true },
+  { text: 'Les abeilles peuvent reconnaître des visages humains.', answer: true },
+  { text: 'Le verre est un liquide qui coule très lentement.', answer: false },
+  { text: 'Un jour sur Vénus dure plus longtemps qu’une année sur Vénus.', answer: true },
+  { text: 'Les bébés ont plus d’os que les adultes.', answer: true },
+  { text: 'La carotte a toujours été orange.', answer: false },
+  { text: 'Les kangourous ne peuvent pas marcher à reculons.', answer: true },
+  { text: 'Le chocolat blanc contient du cacao en poudre.', answer: false },
+  { text: 'L’eau chaude peut geler plus vite que l’eau froide.', answer: true },
+  { text: 'Les requins n’ont pas d’os.', answer: true },
+  { text: 'Le caméléon change de couleur uniquement pour se camoufler.', answer: false },
+  { text: 'Il pleut des diamants sur Jupiter et Saturne.', answer: true },
+  { text: 'Les humains et les bananes partagent environ 50% de leur ADN.', answer: true },
+  { text: 'Le pingouin vit au pôle Nord.', answer: false },
+  { text: 'Un éclair ne frappe jamais deux fois le même endroit.', answer: false },
 ];
-
-function shuffle<T>(a: T[]): T[] {
-  const r = [...a];
-  for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; }
-  return r;
-}
 
 const TIME = 10;
 const REVEAL = 4;
@@ -45,7 +62,7 @@ export class TrueFalseGame implements GameInstance {
 
   start(): void {
     for (const p of this.ctx.players()) { this.scores.set(p.id, 0); this.names.set(p.id, p.name); }
-    this.deck = shuffle(STATEMENTS).slice(0, NB);
+    this.deck = pickFresh(`true-false:${this.ctx.roomCode}`, STATEMENTS, NB, (s) => s.text);
     this.begin();
     this.ctx.setInterval(() => this.tick(), 1000);
   }

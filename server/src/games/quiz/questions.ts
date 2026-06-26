@@ -18,19 +18,48 @@ export const QUESTIONS: Question[] = [
   { q: 'Qui a écrit "Les Misérables" ?', options: ['Zola', 'Hugo', 'Balzac', 'Flaubert'], correct: 1 },
   { q: 'Quel est l’élément chimique de symbole "O" ?', options: ['Or', 'Oxygène', 'Osmium', 'Olivine'], correct: 1 },
   { q: 'Combien de continents y a-t-il ?', options: ['5', '6', '7', '8'], correct: 2 },
-  { q: 'Quel animal est le plus rapide du monde (à la course) ?', options: ['Lion', 'Guépard', 'Cheval', 'Antilope'], correct: 1 },
+  { q: 'Quel animal est le plus rapide à la course ?', options: ['Lion', 'Guépard', 'Cheval', 'Antilope'], correct: 1 },
   { q: 'La Tour Eiffel se trouve dans quelle ville ?', options: ['Lyon', 'Marseille', 'Paris', 'Nice'], correct: 2 },
   { q: 'Quel est le plus long fleuve du monde ?', options: ['Amazone', 'Nil', 'Mississippi', 'Yangtsé'], correct: 1 },
   { q: 'Combien font 7 x 8 ?', options: ['54', '56', '58', '64'], correct: 1 },
   { q: 'Quel pays a la forme d’une botte ?', options: ['Espagne', 'Grèce', 'Italie', 'Portugal'], correct: 2 },
   { q: 'Quelle est la vitesse de la lumière (approx.) ?', options: ['300 000 km/s', '150 000 km/s', '1 000 km/s', '3 000 km/s'], correct: 0 },
+  { q: 'Quel est le plus grand pays du monde par superficie ?', options: ['Chine', 'Canada', 'Russie', 'États-Unis'], correct: 2 },
+  { q: 'Combien de cordes a une guitare classique ?', options: ['4', '5', '6', '7'], correct: 2 },
+  { q: 'Qui a peint "La Nuit étoilée" ?', options: ['Van Gogh', 'Dalí', 'Cézanne', 'Renoir'], correct: 0 },
+  { q: 'Quelle est la capitale du Canada ?', options: ['Toronto', 'Montréal', 'Vancouver', 'Ottawa'], correct: 3 },
+  { q: 'Quel organe pompe le sang ?', options: ['Foie', 'Poumon', 'Cœur', 'Rein'], correct: 2 },
+  { q: 'Combien de pattes a une araignée ?', options: ['6', '8', '10', '12'], correct: 1 },
+  { q: 'Quel est le métal liquide à température ambiante ?', options: ['Plomb', 'Mercure', 'Fer', 'Étain'], correct: 1 },
+  { q: 'Quelle mer borde la Côte d’Azur ?', options: ['Mer du Nord', 'Mer Baltique', 'Mer Méditerranée', 'Mer Noire'], correct: 2 },
+  { q: 'Qui a découvert la gravité (légende de la pomme) ?', options: ['Einstein', 'Newton', 'Galilée', 'Darwin'], correct: 1 },
+  { q: 'Combien de minutes dans une heure ?', options: ['30', '60', '90', '100'], correct: 1 },
+  { q: 'Quel est le plus haut sommet du monde ?', options: ['K2', 'Mont Blanc', 'Everest', 'Kilimandjaro'], correct: 2 },
+  { q: 'Quelle langue parle-t-on au Brésil ?', options: ['Espagnol', 'Portugais', 'Français', 'Italien'], correct: 1 },
+  { q: 'Combien de couleurs dans un arc-en-ciel ?', options: ['5', '6', '7', '8'], correct: 2 },
+  { q: 'Quel est le symbole chimique de l’eau ?', options: ['CO2', 'O2', 'H2O', 'NaCl'], correct: 2 },
+  { q: 'Quel président américain figure sur le billet de 1 dollar ?', options: ['Lincoln', 'Washington', 'Jefferson', 'Franklin'], correct: 1 },
+  { q: 'Combien de joueurs dans une équipe de basket (sur le terrain) ?', options: ['5', '6', '7', '11'], correct: 0 },
+  { q: 'Quelle est la planète rouge ?', options: ['Vénus', 'Mars', 'Jupiter', 'Saturne'], correct: 1 },
+  { q: 'Qui a composé la 9e symphonie ?', options: ['Mozart', 'Bach', 'Beethoven', 'Chopin'], correct: 2 },
+  { q: 'Quel est l’animal terrestre le plus grand ?', options: ['Girafe', 'Éléphant', 'Rhinocéros', 'Hippopotame'], correct: 1 },
+  { q: 'Combien de dents a un adulte (sans sagesse) ?', options: ['28', '30', '32', '34'], correct: 0 },
+  { q: 'Quelle est la capitale de l’Espagne ?', options: ['Barcelone', 'Séville', 'Madrid', 'Valence'], correct: 2 },
+  { q: 'Quel fruit est associé à Isaac Newton ?', options: ['Poire', 'Pomme', 'Orange', 'Cerise'], correct: 1 },
+  { q: 'Quel océan borde la côte ouest des États-Unis ?', options: ['Atlantique', 'Pacifique', 'Indien', 'Arctique'], correct: 1 },
+  { q: 'Combien de zéros dans un million ?', options: ['5', '6', '7', '9'], correct: 1 },
+  { q: 'Quel gaz respirons-nous principalement ?', options: ['Oxygène', 'Azote', 'CO2', 'Hélium'], correct: 1 },
+  { q: 'Qui a peint le plafond de la chapelle Sixtine ?', options: ['Raphaël', 'Michel-Ange', 'Donatello', 'Botticelli'], correct: 1 },
+  { q: 'Quelle est la capitale de l’Italie ?', options: ['Milan', 'Venise', 'Rome', 'Naples'], correct: 2 },
+  { q: 'Combien de cartes dans un jeu de 32 ?', options: ['28', '30', '32', '36'], correct: 2 },
+  { q: 'Quel est le plus petit pays du monde ?', options: ['Monaco', 'Vatican', 'Malte', 'Liechtenstein'], correct: 1 },
+  { q: 'Quelle planète a des anneaux célèbres ?', options: ['Mars', 'Saturne', 'Neptune', 'Vénus'], correct: 1 },
+  { q: 'Quel est le sport de Roland-Garros ?', options: ['Golf', 'Tennis', 'Cyclisme', 'Rugby'], correct: 1 },
+  { q: 'Combien de lettres dans l’alphabet français ?', options: ['24', '25', '26', '27'], correct: 2 },
+  { q: 'Quelle est la capitale de l’Allemagne ?', options: ['Munich', 'Hambourg', 'Berlin', 'Francfort'], correct: 2 },
+  { q: 'Quel est l’astre qui éclaire la nuit ?', options: ['Le Soleil', 'La Lune', 'Mars', 'Vénus'], correct: 1 },
+  { q: 'Quel scientifique a développé la théorie de la relativité ?', options: ['Newton', 'Einstein', 'Hawking', 'Bohr'], correct: 1 },
+  { q: 'Combien de saisons dans une année ?', options: ['2', '3', '4', '5'], correct: 2 },
+  { q: 'Quel est le roi des animaux ?', options: ['Tigre', 'Lion', 'Éléphant', 'Ours'], correct: 1 },
+  { q: 'Quelle est la capitale du Portugal ?', options: ['Porto', 'Lisbonne', 'Faro', 'Braga'], correct: 1 },
 ];
-
-export function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}

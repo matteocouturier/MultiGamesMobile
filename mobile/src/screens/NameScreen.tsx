@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Body, Button, Screen, Subtitle, Title } from '../components/ui';
 import { theme } from '../theme';
 import { useStore } from '../state/store';
 
 export function NameScreen() {
-  const { setPlayerName, connected } = useStore();
+  const { setPlayerName, connected, savedName } = useStore();
   const [name, setName] = useState('');
   const valid = name.trim().length >= 2;
+
+  // Pre-fill with the pseudo saved from a previous session.
+  useEffect(() => {
+    if (savedName) setName((cur) => (cur ? cur : savedName));
+  }, [savedName]);
 
   return (
     <Screen style={styles.center}>

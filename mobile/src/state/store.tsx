@@ -1,10 +1,14 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSocket } from '../net/socket';
 import { Ack, GameDefinition, GameEvent, GameResults, RoomState } from '../shared/types';
+
+const NAME_KEY = 'multigames.playerName';
 
 interface Store {
   connected: boolean;
   playerName: string;
+  savedName: string;
   myId: string | null;
   catalog: GameDefinition[];
   room: RoomState | null;
@@ -30,7 +34,8 @@ const StoreContext = createContext<Store | null>(null);
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const socket = useMemo(() => getSocket(), []);
   const [connected, setConnected] = useState(socket.connected);
-  const [playerName, setPlayerName] = useState('');
+  const [playerName, setPlayerNameState] = useState('');
+  const [savedName, setSavedName] = useState('');
   const [myId, setMyId] = useState<string | null>(socket.id ?? null);
   const [catalog, setCatalog] = useState<GameDefinition[]>([]);
   const [room, setRoom] = useState<RoomState | null>(null);
@@ -90,6 +95,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     };
   }, [socket]);
 
+  // Load a previously saved pseudo (browser session / device) once at startup.
+  useEffect(() => {
+    AsyncStorage.getItem(NAME_KEY).then((n) => {
+      if (n) setSavedName(n);
+    });
+  }, []);
+
+  const setPlayerName = (name: string) => {
+    const clean = name.trim();
+    setPlayerNameState(clean);
+    if (clean) {
+      setSavedName(clean);
+      AsyncStorage.setItem(NAME_KEY, clean).catch(() => {});
+    }
+  };
+
   const createRoom = (gameId: string) =>
     new Promise<string | null>((resolve) => {
       socket.emit('lobby:create', { playerName, gameId }, (res: Ack<{ code: string }>) => {
@@ -119,6 +140,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const value: Store = {
     connected,
     playerName,
+    savedName,
     myId,
     catalog,
     room,
