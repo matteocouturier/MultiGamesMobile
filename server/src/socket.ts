@@ -63,6 +63,9 @@ export function attachSocketServer(io: IO): RoomManager {
         socket.join(room.code);
         socket.data.roomCode = room.code;
         ack({ ok: true, data: { code: room.code } });
+        // The first broadcast happened before this socket joined the room, so
+        // re-send the current state to the newly joined player.
+        room.broadcastRoom();
       } catch (e) {
         ack({ ok: false, error: errMsg(e) });
       }
@@ -74,6 +77,8 @@ export function attachSocketServer(io: IO): RoomManager {
         socket.join(room.code);
         socket.data.roomCode = room.code;
         ack({ ok: true, data: { code: room.code } });
+        // Ensure the just-joined socket receives the current room state.
+        room.broadcastRoom();
       } catch (e) {
         ack({ ok: false, error: errMsg(e) });
       }

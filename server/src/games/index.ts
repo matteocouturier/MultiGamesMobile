@@ -5,8 +5,62 @@
 
 import { registry } from '../core/registry';
 import { guessTheWordModule } from './guessTheWord';
+import { wordBombModule } from './wordBomb';
+import { quizModule } from './quiz';
+import { reflexModule } from './reflex';
+import { higherLowerModule } from './higherLower';
+import { petitBacModule } from './petitBac';
+import { undercoverModule } from './undercover';
+import { trueFalseModule } from './trueFalse';
+import { anagramModule } from './anagram';
+import { chifoumiModule } from './chifoumi';
+import { numberGuessModule } from './numberGuess';
+import { mathDuelModule } from './mathDuel';
+import { emojiQuizModule } from './emojiQuiz';
+import { stroopModule } from './stroop';
+import { morpionModule } from './morpion';
+import { simonModule } from './simon';
+import { hangmanModule } from './hangman';
+import { topCardModule } from './topCard';
+import { popularModule } from './popular';
+import { connect4Module } from './connect4';
+import { memoryModule } from './memory';
+import { intruderModule } from './intruder';
+import { pressLuckModule } from './pressLuck';
+import { accordModule } from './accord';
+import { duoQuizModule } from './duoQuiz';
+import { batailleModule } from './bataille';
+import { relaisCalculModule } from './relaisCalcul';
+import { wavelengthModule } from './wavelength';
 
 export function registerGames(): void {
   registry.register(guessTheWordModule);
+  registry.register(wordBombModule);
+  registry.register(quizModule);
+  registry.register(reflexModule);
+  registry.register(higherLowerModule);
+  registry.register(petitBacModule);
+  registry.register(undercoverModule);
+  registry.register(trueFalseModule);
+  registry.register(anagramModule);
+  registry.register(chifoumiModule);
+  registry.register(numberGuessModule);
+  registry.register(mathDuelModule);
+  registry.register(emojiQuizModule);
+  registry.register(stroopModule);
+  registry.register(morpionModule);
+  registry.register(simonModule);
+  registry.register(hangmanModule);
+  registry.register(topCardModule);
+  registry.register(popularModule);
+  registry.register(connect4Module);
+  registry.register(memoryModule);
+  registry.register(intruderModule);
+  registry.register(pressLuckModule);
+  registry.register(accordModule);
+  registry.register(duoQuizModule);
+  registry.register(batailleModule);
+  registry.register(relaisCalculModule);
+  registry.register(wavelengthModule);
   // registry.register(nextGameModule);  <-- future games go here
 }

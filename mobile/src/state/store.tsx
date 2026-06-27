@@ -1,10 +1,15 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSocket } from '../net/socket';
+import { readJoinCode, clearJoinParam } from '../net/invite';
 import { Ack, GameDefinition, GameEvent, GameResults, RoomState } from '../shared/types';
+
+const NAME_KEY = 'multigames.playerName';
 
 interface Store {
   connected: boolean;
   playerName: string;
+  savedName: string;
   myId: string | null;
   catalog: GameDefinition[];
   room: RoomState | null;
@@ -12,6 +17,7 @@ interface Store {
   results: GameResults | null;
   lastEvent: GameEvent | null;
   error: string | null;
+  pendingJoin: string | null;
 
   setPlayerName: (name: string) => void;
   refreshCatalog: () => void;
@@ -30,7 +36,8 @@ const StoreContext = createContext<Store | null>(null);
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const socket = useMemo(() => getSocket(), []);
   const [connected, setConnected] = useState(socket.connected);
-  const [playerName, setPlayerName] = useState('');
+  const [playerName, setPlayerNameState] = useState('');
+  const [savedName, setSavedName] = useState('');
   const [myId, setMyId] = useState<string | null>(socket.id ?? null);
   const [catalog, setCatalog] = useState<GameDefinition[]>([]);
   const [room, setRoom] = useState<RoomState | null>(null);
@@ -38,6 +45,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [results, setResults] = useState<GameResults | null>(null);
   const [lastEvent, setLastEvent] = useState<GameEvent | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pendingJoin, setPendingJoin] = useState<string | null>(() => readJoinCode());
   const eventTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -90,6 +98,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     };
   }, [socket]);
 
+  // Load a previously saved pseudo (browser session / device) once at startup.
+  useEffect(() => {
+    AsyncStorage.getItem(NAME_KEY).then((n) => {
+      if (n) setSavedName(n);
+    });
+  }, []);
+
+  const setPlayerName = (name: string) => {
+    const clean = name.trim();
+    setPlayerNameState(clean);
+    if (clean) {
+      setSavedName(clean);
+      AsyncStorage.setItem(NAME_KEY, clean).catch(() => {});
+    }
+  };
+
   const createRoom = (gameId: string) =>
     new Promise<string | null>((resolve) => {
       socket.emit('lobby:create', { playerName, gameId }, (res: Ack<{ code: string }>) => {
@@ -116,9 +140,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       );
     });
 
+  // Auto-join a shared salon: once the player has a pseudo and we're connected,
+  // join the code carried by the invite link (?join=CODE), then forget it.
+  useEffect(() => {
+    if (!pendingJoin || !playerName || !connected || room) return;
+    joinRoom(pendingJoin).finally(() => {
+      setPendingJoin(null);
+      clearJoinParam();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingJoin, playerName, connected, room]);
+
   const value: Store = {
     connected,
     playerName,
+    savedName,
     myId,
     catalog,
     room,
@@ -126,6 +162,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     results,
     lastEvent,
     error,
+    pendingJoin,
     setPlayerName,
     refreshCatalog: () =>
       socket.emit('catalog:list', (res: Ack<{ games: GameDefinition[] }>) => {

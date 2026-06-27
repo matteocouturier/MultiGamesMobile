@@ -1,0 +1,12 @@
+# Reverse proxy HTTPS pour MultiGames.
+# Caddy obtient et renouvelle automatiquement le certificat Let's Encrypt
+# (il faut que 644.fr pointe vers ce serveur et que les ports 80 + 443 soient ouverts).
+644.fr {
+    encode gzip zstd
+    reverse_proxy multigames:4000
+}
+
+# Optionnel : rediriger le www vers l'apex (décommente si tu utilises www.644.fr)
+# www.644.fr {
+#     redir https://644.fr{uri}
+# }

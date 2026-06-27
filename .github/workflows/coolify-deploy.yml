@@ -1,0 +1,23 @@
+name: Deploy to Coolify
+
+# Déploiement automatique : à chaque push, on déclenche le déploiement Coolify
+# via son endpoint de deploy. Le token Coolify est stocké en secret GitHub
+# (Settings → Secrets and variables → Actions → New secret : COOLIFY_TOKEN).
+#
+# Pour créer le token : Coolify → Keys & Tokens → API Tokens → Create.
+
+on:
+  push:
+    branches:
+      - claude/multiplayer-minigames-app-g7by79
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Déclencher le déploiement Coolify
+        run: |
+          curl --fail-with-body -sS -X GET \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \
+            "http://85.215.156.85:8000/api/v1/deploy?uuid=mnpoy753mxl7ktfg8k5li6a3&force=false"
