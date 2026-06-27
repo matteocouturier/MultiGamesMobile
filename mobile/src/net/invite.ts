@@ -36,16 +36,18 @@ export function inviteLink(code: string): string {
 }
 
 /** Share via the native share sheet, or fall back to copying the link. */
-export async function shareInvite(code: string): Promise<'shared' | 'copied' | 'none'> {
+export async function shareInvite(code: string, gameName?: string): Promise<'shared' | 'copied' | 'none'> {
   const url = inviteLink(code);
-  const text = `Rejoins ma partie sur MultiGames 🎮 — code ${code}`;
+  const message = gameName
+    ? `Hey viens jouer avec moi à « ${gameName} » sur MultiGames 🎮 — code ${code}`
+    : `Hey viens jouer avec moi sur MultiGames 🎮 — code ${code}`;
   try {
     if (g.navigator?.share) {
-      await g.navigator.share({ title: 'MultiGames', text, url });
+      await g.navigator.share({ title: 'MultiGames', text: message, url });
       return 'shared';
     }
     if (g.navigator?.clipboard?.writeText) {
-      await g.navigator.clipboard.writeText(url);
+      await g.navigator.clipboard.writeText(`${message}\n${url}`);
       return 'copied';
     }
   } catch {
