@@ -34,4 +34,7 @@ COPY --from=web /web/dist ./public
 ENV PORT=4000
 ENV PUBLIC_DIR=/app/public
 EXPOSE 4000
+# Healthcheck pour Coolify/Docker (busybox wget dispo dans alpine).
+HEALTHCHECK --interval=30s --timeout=5s --start-period=25s --retries=3 \
+  CMD wget -qO- http://127.0.0.1:4000/health || exit 1
 CMD ["node", "dist/index.js"]
