@@ -1,0 +1,26 @@
+# Stack HTTPS : l'app MultiGames derrière un reverse proxy Caddy (TLS auto).
+# Lancement : bash deploy-https.sh   (ou: docker compose up -d --build)
+services:
+  multigames:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "4000"
+    # Pas besoin de publier de port : Caddy parle au conteneur via le réseau interne.
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - multigames
+
+volumes:
+  caddy_data:
+  caddy_config:
