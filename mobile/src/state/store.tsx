@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSocket } from '../net/socket';
+import { readJoinCode, clearJoinParam } from '../net/invite';
 import { Ack, GameDefinition, GameEvent, GameResults, RoomState } from '../shared/types';
 
 const NAME_KEY = 'multigames.playerName';
@@ -16,6 +17,7 @@ interface Store {
   results: GameResults | null;
   lastEvent: GameEvent | null;
   error: string | null;
+  pendingJoin: string | null;
 
   setPlayerName: (name: string) => void;
   refreshCatalog: () => void;
@@ -43,6 +45,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [results, setResults] = useState<GameResults | null>(null);
   const [lastEvent, setLastEvent] = useState<GameEvent | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pendingJoin, setPendingJoin] = useState<string | null>(() => readJoinCode());
   const eventTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -137,6 +140,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       );
     });
 
+  // Auto-join a shared salon: once the player has a pseudo and we're connected,
+  // join the code carried by the invite link (?join=CODE), then forget it.
+  useEffect(() => {
+    if (!pendingJoin || !playerName || !connected || room) return;
+    joinRoom(pendingJoin).finally(() => {
+      setPendingJoin(null);
+      clearJoinParam();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingJoin, playerName, connected, room]);
+
   const value: Store = {
     connected,
     playerName,
@@ -148,6 +162,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     results,
     lastEvent,
     error,
+    pendingJoin,
     setPlayerName,
     refreshCatalog: () =>
       socket.emit('catalog:list', (res: Ack<{ games: GameDefinition[] }>) => {

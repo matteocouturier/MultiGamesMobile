@@ -5,7 +5,7 @@ import { theme } from '../theme';
 import { useStore } from '../state/store';
 
 export function NameScreen() {
-  const { setPlayerName, connected, savedName } = useStore();
+  const { setPlayerName, connected, savedName, pendingJoin } = useStore();
   const [name, setName] = useState('');
   const valid = name.trim().length >= 2;
 
@@ -39,6 +39,13 @@ export function NameScreen() {
       <Title style={styles.logo}>MultiGames</Title>
       <Body style={styles.tag}>Des mini-jeux à plusieurs, en temps réel ✨</Body>
 
+      {pendingJoin && (
+        <View style={styles.invite}>
+          <Body style={styles.inviteText}>🎮 Tu rejoins le salon</Body>
+          <Body style={styles.inviteCode}>{pendingJoin}</Body>
+        </View>
+      )}
+
       <View style={styles.form}>
         <Body style={styles.label}>TON PSEUDO</Body>
         <TextInput
@@ -52,7 +59,11 @@ export function NameScreen() {
           returnKeyType="done"
           onSubmitEditing={() => valid && setPlayerName(name.trim())}
         />
-        <Button label="C'est parti →" onPress={() => setPlayerName(name.trim())} disabled={!valid} />
+        <Button
+          label={pendingJoin ? 'Rejoindre la partie →' : "C'est parti →"}
+          onPress={() => setPlayerName(name.trim())}
+          disabled={!valid}
+        />
         <View style={styles.statusRow}>
           <View style={[styles.dot, { backgroundColor: connected ? theme.colors.success : theme.colors.warning }]} />
           <Body style={styles.status}>{connected ? 'Connecté au serveur' : 'Connexion...'}</Body>
@@ -83,6 +94,27 @@ const styles = StyleSheet.create({
   dice: { fontSize: 60 },
   logo: { fontSize: 46, textAlign: 'center', letterSpacing: -1 },
   tag: { textAlign: 'center', color: theme.colors.textMuted, marginTop: theme.spacing(0.5), marginBottom: theme.spacing(5) },
+  invite: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(139,92,246,0.14)',
+    borderColor: theme.colors.borderStrong,
+    borderWidth: 1,
+    borderRadius: theme.radius.md,
+    paddingVertical: theme.spacing(1.5),
+    paddingHorizontal: theme.spacing(3),
+    marginBottom: theme.spacing(3),
+  },
+  inviteText: { color: theme.colors.textMuted, fontSize: theme.font.small },
+  inviteCode: {
+    color: theme.colors.white,
+    fontSize: 28,
+    fontWeight: '900',
+    letterSpacing: 6,
+    marginTop: theme.spacing(0.5),
+    textShadowColor: 'rgba(139,92,246,0.6)',
+    textShadowRadius: 14,
+  },
   form: { gap: theme.spacing(1.25) },
   label: { color: theme.colors.primary, fontSize: 12, fontWeight: '900', letterSpacing: 3, marginLeft: 4 },
   input: {

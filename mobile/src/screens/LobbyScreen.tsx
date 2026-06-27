@@ -1,18 +1,31 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Body, Button, Card, Pill, Screen, Subtitle, Title } from '../components/ui';
 import { theme } from '../theme';
 import { useStore } from '../state/store';
+import { shareInvite } from '../net/invite';
 import { PublicPlayer, TeamInfo } from '../shared/types';
 
 export function LobbyScreen() {
   const { room, myId, leaveRoom, setTeam, startGame } = useStore();
+  const [shareMsg, setShareMsg] = useState<string | null>(null);
+  const shareTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (shareTimer.current) clearTimeout(shareTimer.current); }, []);
   if (!room) return null;
 
   const isHost = room.hostId === myId;
   const me = room.players.find((p) => p.id === myId);
   const slotsLeft = room.game.maxPlayers - room.players.length;
+
+  const onShare = async () => {
+    const res = await shareInvite(room.code);
+    if (res === 'copied') setShareMsg('🔗 Lien copié !');
+    else if (res === 'shared') setShareMsg(null);
+    else if (res === 'none') setShareMsg('Partage indisponible');
+    if (shareTimer.current) clearTimeout(shareTimer.current);
+    shareTimer.current = setTimeout(() => setShareMsg(null), 2200);
+  };
 
   return (
     <Screen>
@@ -25,6 +38,8 @@ export function LobbyScreen() {
         <Body style={styles.codeLabel}>Code du salon</Body>
         <Title style={styles.code}>{room.code}</Title>
         <Body style={styles.codeHint}>Partage ce code pour inviter tes amis</Body>
+        <Button label="📤 Partager le salon" variant="ghost" small onPress={onShare} style={styles.shareBtn} />
+        {shareMsg && <Body style={styles.shareMsg}>{shareMsg}</Body>}
       </Card>
 
       <View style={styles.countRow}>
@@ -188,6 +203,8 @@ const styles = StyleSheet.create({
     textShadowRadius: 18,
   },
   codeHint: { color: theme.colors.textMuted, fontSize: theme.font.small },
+  shareBtn: { marginTop: theme.spacing(1.5), borderColor: theme.colors.primary },
+  shareMsg: { color: theme.colors.success, fontSize: theme.font.small, marginTop: theme.spacing(1), fontWeight: '700' },
   countRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: theme.spacing(1.5) },
   teamCard: { borderWidth: 1.5, gap: theme.spacing(1) },
   teamHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },

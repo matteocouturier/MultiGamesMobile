@@ -3,11 +3,13 @@ import {
   ActivityIndicator,
   Animated,
   Pressable,
+  StyleProp,
   StyleSheet,
   Text,
   TextProps,
   View,
   ViewProps,
+  ViewStyle,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { theme, toggleTheme } from '../theme';
@@ -91,6 +93,7 @@ interface ButtonProps {
   loading?: boolean;
   small?: boolean;
   color?: string;
+  style?: StyleProp<ViewStyle>;
 }
 export function Button({
   label,
@@ -100,6 +103,7 @@ export function Button({
   loading,
   small,
   color,
+  style,
 }: ButtonProps) {
   const isGhost = variant === 'ghost';
   const usesGradient = variant === 'primary' && !color;
@@ -143,6 +147,7 @@ export function Button({
           opacity: disabled ? 0.4 : 1,
           transform: [{ scale: pressed ? 0.975 : 1 }],
         },
+        style,
       ]}
     >
       {usesGradient ? (
