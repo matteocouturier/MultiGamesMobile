@@ -27,6 +27,11 @@ import { connect4Module } from './connect4';
 import { memoryModule } from './memory';
 import { intruderModule } from './intruder';
 import { pressLuckModule } from './pressLuck';
+import { accordModule } from './accord';
+import { duoQuizModule } from './duoQuiz';
+import { batailleModule } from './bataille';
+import { relaisCalculModule } from './relaisCalcul';
+import { wavelengthModule } from './wavelength';
 
 export function registerGames(): void {
   registry.register(guessTheWordModule);
@@ -52,5 +57,10 @@ export function registerGames(): void {
   registry.register(memoryModule);
   registry.register(intruderModule);
   registry.register(pressLuckModule);
+  registry.register(accordModule);
+  registry.register(duoQuizModule);
+  registry.register(batailleModule);
+  registry.register(relaisCalculModule);
+  registry.register(wavelengthModule);
   // registry.register(nextGameModule);  <-- future games go here
 }

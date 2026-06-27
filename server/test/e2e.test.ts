@@ -68,7 +68,7 @@ async function main() {
   setTimeout(() => {
     console.error('HARD TIMEOUT — aborting');
     process.exit(2);
-  }, 50000).unref();
+  }, 75000).unref();
   registerGames();
   const app = express();
   const server = http.createServer(app);
@@ -391,8 +391,65 @@ async function main() {
   await waitFor(() => pl.every((t) => t.state?.phase === 'result'), 'pressluck resolved', 4000);
   console.log('✓ Stop ou Encore: tous "Stop" -> manche résolue');
 
+  // ---- Scénario 24 : Accord Parfait (2v2) ---------------------------------
+  console.log('\n--- Accord Parfait ---');
+  const ac = await makeRoom('accord', ['A1', 'A2', 'A3', 'A4']);
+  await new Promise((res) => ac[0].socket.emit('lobby:start', res));
+  await waitFor(() => ac.every((t) => t.state?.phase === 'play'), 'accord play');
+  ac.forEach((t) => t.socket.emit('game:action', { type: 'submit', payload: { word: 'test' } }));
+  await waitFor(() => ac.every((t) => t.state?.phase === 'reveal'), 'accord reveal', 4000);
+  assert.ok(ac[0].state.reveal.some((t: any) => t.matched), 'au moins une équipe a matché');
+  console.log('✓ Accord Parfait: mots identiques = équipe qui marque');
+
+  // ---- Scénario 25 : Duo Quiz (2v2) ---------------------------------------
+  console.log('\n--- Duo Quiz ---');
+  const dq = await makeRoom('duo-quiz', ['D1', 'D2', 'D3', 'D4']);
+  await new Promise((res) => dq[0].socket.emit('lobby:start', res));
+  await waitFor(() => dq.every((t) => t.state?.phase === 'question'), 'duoquiz question');
+  const actives = dq.filter((t) => t.state.amIActive);
+  assert.strictEqual(actives.length, 2, 'un répondant actif par équipe');
+  actives.forEach((t) => t.socket.emit('game:action', { type: 'answer', payload: { index: 0 } }));
+  await waitFor(() => dq.every((t) => t.state?.phase === 'reveal'), 'duoquiz reveal', 4000);
+  console.log('✓ Duo Quiz: relais (1 répondant actif par équipe) -> révélation');
+
+  // ---- Scénario 26 : Bataille de Catégories (2v2) -------------------------
+  console.log('\n--- Bataille de Catégories ---');
+  const bt = await makeRoom('bataille', ['B1', 'B2', 'B3', 'B4']);
+  await new Promise((res) => bt[0].socket.emit('lobby:start', res));
+  await waitFor(() => bt.every((t) => t.state?.phase === 'play'), 'bataille play');
+  assert.ok(bt[0].state.category.length > 0, 'une catégorie est tirée');
+  const btTurn = bt.find((t) => t.state.isMyTurn)!;
+  btTurn.socket.emit('game:action', { type: 'submit', payload: { word: 'lion' } });
+  await waitFor(() => bt.some((t) => t.state.usedCount === 1), 'mot accepté');
+  console.log('✓ Bataille: mot cité accepté, tour passé');
+
+  // ---- Scénario 27 : Relais Calcul (2v2) ----------------------------------
+  console.log('\n--- Relais Calcul ---');
+  const rc = await makeRoom('relais-calcul', ['C1', 'C2', 'C3', 'C4']);
+  await new Promise((res) => rc[0].socket.emit('lobby:start', res));
+  await waitFor(() => rc.every((t) => t.state?.phase === 'play'), 'relais play');
+  assert.ok(rc[0].state.problem.length > 0 && rc[0].state.target === 12, 'problème + objectif 12');
+  assert.strictEqual(rc.filter((t) => t.state.amIActive).length, 2, 'un calculateur actif par équipe');
+  console.log('✓ Relais Calcul: problème distribué, relais en place');
+
+  // ---- Scénario 28 : Longueur d'onde (2v2) --------------------------------
+  console.log('\n--- Longueur d’onde ---');
+  const wv = await makeRoom('wavelength', ['W1', 'W2', 'W3', 'W4']);
+  await new Promise((res) => wv[0].socket.emit('lobby:start', res));
+  await waitFor(() => wv.every((t) => t.state?.phase === 'clue'), 'wavelength clue');
+  const psychic = wv.find((t) => t.state.myRole === 'psychic')!;
+  assert.ok(psychic.state.target != null, 'le médium voit la cible');
+  assert.strictEqual(wv.filter((t) => t.state.myRole === 'guesser').length, 1, 'un seul devineur actif');
+  psychic.socket.emit('game:action', { type: 'clue', payload: { word: 'tiede' } });
+  await waitFor(() => wv.every((t) => t.state?.phase === 'guess'), 'wavelength guess', 4000);
+  const guesser = wv.find((t) => t.state.myRole === 'guesser')!;
+  guesser.socket.emit('game:action', { type: 'guess', payload: { value: 50 } });
+  await waitFor(() => wv.every((t) => t.state?.phase === 'reveal'), 'wavelength reveal', 4000);
+  assert.ok(wv[0].state.points != null, 'points attribués selon la proximité');
+  console.log('✓ Longueur d’onde: indice -> curseur -> points');
+
   console.log('\nALL ENGINE TESTS PASSED ✅');
-  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc, ...tf, ...ag, ...cf, ...ng, ...md, ...eq, ...st, ...mo, ...si, ...hm, ...tc, ...po, ...c4, ...me, ...it, ...pl].forEach((t) => t.socket.close());
+  [...all, wbHost, wbGuest, ...qz, ...rx, ...hl, ...pb, ...uc, ...tf, ...ag, ...cf, ...ng, ...md, ...eq, ...st, ...mo, ...si, ...hm, ...tc, ...po, ...c4, ...me, ...it, ...pl, ...ac, ...dq, ...bt, ...rc, ...wv].forEach((t) => t.socket.close());
   ioServer.close();
   server.close();
   await sleep(150);

@@ -120,12 +120,17 @@ export class Room {
     for (const p of this.players.values()) {
       if (p.teamId) counts.set(p.teamId, (counts.get(p.teamId) ?? 0) + 1);
     }
-    let best = this.teams[0].id;
-    let min = Infinity;
-    for (const t of this.teams) {
+    // Pack players into complete teams of `teamSize`: fill the most-filled team
+    // that still has room before opening a new one. With 4 players in teams of
+    // 2 this yields 2 teams of 2 (and 6 -> 3 teams of 2), not many tiny teams.
+    const withRoom = this.teams.filter((t) => (counts.get(t.id) ?? 0) < this.def.teamSize);
+    const pool = withRoom.length ? withRoom : this.teams;
+    let best = pool[0].id;
+    let max = -1;
+    for (const t of pool) {
       const c = counts.get(t.id) ?? 0;
-      if (c < min) {
-        min = c;
+      if (c > max) {
+        max = c;
         best = t.id;
       }
     }

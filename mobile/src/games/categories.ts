@@ -38,4 +38,9 @@ export const GAME_CATEGORY: Record<string, string> = {
   'chifoumi': 'ambiance',
   'popular': 'ambiance',
   'press-luck': 'ambiance',
+  'accord': 'ambiance',
+  'duo-quiz': 'quiz',
+  'bataille': 'ambiance',
+  'relais-calcul': 'reflexe',
+  'wavelength': 'ambiance',
 };

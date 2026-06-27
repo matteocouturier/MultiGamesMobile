@@ -22,6 +22,11 @@ import { Connect4View } from './connect4/Connect4View';
 import { MemoryView } from './memory/MemoryView';
 import { IntruderView } from './intruder/IntruderView';
 import { PressLuckView } from './pressLuck/PressLuckView';
+import { AccordView } from './accord/AccordView';
+import { DuoQuizView } from './duoQuiz/DuoQuizView';
+import { BatailleView } from './bataille/BatailleView';
+import { RelaisCalculView } from './relaisCalcul/RelaisCalculView';
+import { WavelengthView } from './wavelength/WavelengthView';
 
 /**
  * Maps a gameId to its in-game view component. Mirror of the server-side game
@@ -51,4 +56,9 @@ export const GAME_VIEWS: Record<string, React.ComponentType<{ state: any }>> = {
   'memory': MemoryView,
   'intruder': IntruderView,
   'press-luck': PressLuckView,
+  'accord': AccordView,
+  'duo-quiz': DuoQuizView,
+  'bataille': BatailleView,
+  'relais-calcul': RelaisCalculView,
+  'wavelength': WavelengthView,
 };
