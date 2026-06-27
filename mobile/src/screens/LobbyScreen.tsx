@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Body, Button, Card, Pill, Screen, Subtitle, Title } from '../components/ui';
 import { theme } from '../theme';
 import { useStore } from '../state/store';
@@ -37,20 +38,36 @@ export function LobbyScreen() {
         </Subtitle>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 150 }}>
         {room.game.teamBased ? (
           <TeamsView room={room} myId={myId} me={me} onPick={setTeam} />
         ) : (
           <PlayersList players={room.players} hostId={room.hostId} myId={myId} />
         )}
 
-        {Array.from({ length: Math.max(0, slotsLeft) }).map((_, i) => (
-          <Card key={`slot-${i}`} style={styles.slot}>
-            <Body style={styles.slotText}>· En attente d'un joueur ·</Body>
-          </Card>
-        ))}
+        {/* Empty seats — only for non-team games, capped to keep it tidy. */}
+        {!room.game.teamBased && slotsLeft > 0 && (
+          <View style={styles.slots}>
+            {Array.from({ length: Math.min(slotsLeft, 3) }).map((_, i) => (
+              <Card key={`slot-${i}`} style={styles.slot}>
+                <Body style={styles.slotText}>· En attente d'un joueur ·</Body>
+              </Card>
+            ))}
+            {slotsLeft > 3 && (
+              <Body style={styles.moreSlots}>
+                + {slotsLeft - 3} place{slotsLeft - 3 > 1 ? 's' : ''} libre{slotsLeft - 3 > 1 ? 's' : ''}
+              </Body>
+            )}
+          </View>
+        )}
       </ScrollView>
 
+      {/* Fade so scrolled content disappears cleanly behind the action bar. */}
+      <LinearGradient
+        colors={['transparent', theme.colors.bg]}
+        style={styles.footerFade}
+        pointerEvents="none"
+      />
       <View style={styles.footer}>
         {isHost ? (
           <Button
@@ -187,13 +204,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   playerName: { flex: 1, fontSize: theme.font.body, color: theme.colors.text },
+  slots: { gap: theme.spacing(1), marginTop: theme.spacing(1.5) },
   slot: {
-    marginTop: theme.spacing(1),
     borderStyle: 'dashed',
     backgroundColor: 'transparent',
     alignItems: 'center',
+    paddingVertical: theme.spacing(1.25),
   },
   slotText: { color: theme.colors.textMuted, fontStyle: 'italic' },
+  moreSlots: { textAlign: 'center', color: theme.colors.textMuted, fontSize: theme.font.small, marginTop: theme.spacing(0.5) },
+  footerFade: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 150,
+  },
   footer: {
     position: 'absolute',
     left: theme.spacing(2.5),
