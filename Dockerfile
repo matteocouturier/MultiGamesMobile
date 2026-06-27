@@ -18,7 +18,8 @@ COPY server/package*.json ./
 RUN npm ci
 COPY server/tsconfig.json ./
 COPY server/src ./src
-# Sortie -> /srv/dist
+COPY server/scripts ./scripts
+# Sortie -> /srv/dist (+ copie des configs JSON dans dist/content)
 RUN npm run build
 
 # --- Runtime ---
