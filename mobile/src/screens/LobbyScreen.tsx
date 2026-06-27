@@ -19,7 +19,7 @@ export function LobbyScreen() {
   const slotsLeft = room.game.maxPlayers - room.players.length;
 
   const onShare = async () => {
-    const res = await shareInvite(room.code);
+    const res = await shareInvite(room.code, room.game.name);
     if (res === 'copied') setShareMsg('🔗 Lien copié !');
     else if (res === 'shared') setShareMsg(null);
     else if (res === 'none') setShareMsg('Partage indisponible');
