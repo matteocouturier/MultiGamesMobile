@@ -75,7 +75,12 @@ export const theme = {
     night: ['#1E1248', '#08060F'] as Grad,
     success: ['#34D399', '#0D9488'] as Grad,
   },
-  radius: { sm: 12, md: 18, lg: 26, xl: 34, pill: 999 },
+  // Premium type: "Sora" for display/headings, "Inter" for body (loaded on web).
+  fonts: {
+    display: 'Sora, system-ui, -apple-system, sans-serif',
+    body: 'Inter, system-ui, -apple-system, sans-serif',
+  },
+  radius: { sm: 14, md: 20, lg: 28, xl: 38, pill: 999 },
   spacing: (n: number) => n * 8,
   font: { h1: 36, h2: 25, h3: 19, body: 16, small: 13 },
   shadow: {
@@ -144,8 +149,25 @@ try {
       m.setAttribute('content', content);
     }
 
+    // Premium web fonts (Sora + Inter).
+    const preconnect = doc.createElement('link');
+    preconnect.setAttribute('rel', 'preconnect');
+    preconnect.setAttribute('href', 'https://fonts.gstatic.com');
+    preconnect.setAttribute('crossorigin', '');
+    doc.head.appendChild(preconnect);
+    const fontsLink = doc.createElement('link');
+    fontsLink.setAttribute('rel', 'stylesheet');
+    fontsLink.setAttribute(
+      'href',
+      'https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap'
+    );
+    doc.head.appendChild(fontsLink);
+
     const style = doc.createElement('style');
     style.innerHTML = `
+      html, body, #root {
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+      }
       html, body, #root {
         height: 100%;
         margin: 0;

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Body, Button, Card, Pill, Screen, Subtitle, ThemeToggle, Title } from '../components/ui';
+import { Body, Button, Card, glass, Pill, Screen, Subtitle, ThemeToggle, Title } from '../components/ui';
 import { theme } from '../theme';
 import { useStore } from '../state/store';
 import { GameDefinition } from '../shared/types';
@@ -97,11 +97,11 @@ export function HomeScreen() {
         )}
         {filtered.map((g) => (
           <Pressable key={g.id} onPress={() => setSelected(g)} style={({ pressed }) => [{ transform: [{ scale: pressed ? 0.985 : 1 }] }]}>
-            <View style={[styles.gameCard, { borderColor: g.color + '40' }]}>
-              <LinearGradient colors={[g.color + '33', 'transparent']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0.6 }} style={StyleSheet.absoluteFill} />
-              <View style={[styles.iconBubble, { backgroundColor: g.color, shadowColor: g.color }]}>
+            <View style={[styles.gameCard, glass, { borderColor: g.color + '3A' }]}>
+              <LinearGradient colors={[g.color + '2E', 'transparent']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0.7 }} style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={[g.color, g.color + 'B0']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.iconBubble, { shadowColor: g.color }]}>
                 <Body style={styles.icon}>{g.icon}</Body>
-              </View>
+              </LinearGradient>
               <View style={styles.gameInfo}>
                 <Body style={styles.gameName}>{g.name}</Body>
                 <Body style={styles.gameTag}>{g.tagline}</Body>
@@ -110,7 +110,9 @@ export function HomeScreen() {
                   {g.teamBased && <Pill label={`Équipes de ${g.teamSize}`} color={theme.colors.textMuted} />}
                 </View>
               </View>
-              <Body style={[styles.chevron, { color: g.color }]}>›</Body>
+              <View style={[styles.chevronWrap, { borderColor: g.color + '55' }]}>
+                <Body style={[styles.chevron, { color: g.color }]}>›</Body>
+              </View>
             </View>
           </Pressable>
         ))}
@@ -226,20 +228,22 @@ const styles = StyleSheet.create({
   noMatchEmoji: { fontSize: 44 },
   noMatchText: { color: theme.colors.textMuted },
   gameCard: {
-    flexDirection: 'row', alignItems: 'center', gap: theme.spacing(2), marginBottom: theme.spacing(1.5),
-    padding: theme.spacing(1.75), borderRadius: theme.radius.lg, borderWidth: 1,
+    flexDirection: 'row', alignItems: 'center', gap: theme.spacing(2), marginBottom: theme.spacing(1.75),
+    padding: theme.spacing(2), borderRadius: theme.radius.lg, borderWidth: 1,
     backgroundColor: theme.colors.surface, overflow: 'hidden', ...theme.shadow.card,
   },
   iconBubble: {
-    width: 62, height: 62, borderRadius: theme.radius.md, alignItems: 'center', justifyContent: 'center',
-    shadowOpacity: 0.6, shadowRadius: 14, shadowOffset: { width: 0, height: 6 }, elevation: 8,
+    width: 66, height: 66, borderRadius: theme.radius.md, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.28)',
+    shadowOpacity: 0.7, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8,
   },
-  icon: { fontSize: 30 },
-  gameInfo: { flex: 1, gap: 3 },
-  gameName: { fontSize: theme.font.h3, fontWeight: '800', color: theme.colors.text },
+  icon: { fontSize: 31 },
+  gameInfo: { flex: 1, gap: 4 },
+  gameName: { fontSize: theme.font.h3, fontFamily: theme.fonts.display, fontWeight: '700', color: theme.colors.text, letterSpacing: -0.3 },
   gameTag: { fontSize: theme.font.small, color: theme.colors.textMuted },
-  gameMeta: { flexDirection: 'row', gap: theme.spacing(1), marginTop: 4, flexWrap: 'wrap' },
-  chevron: { fontSize: 30, fontWeight: '300' },
+  gameMeta: { flexDirection: 'row', gap: theme.spacing(1), marginTop: 5, flexWrap: 'wrap' },
+  chevronWrap: { width: 34, height: 34, borderRadius: 17, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  chevron: { fontSize: 22, fontWeight: '500', marginTop: -2 },
   backdrop: { flex: 1, backgroundColor: '#000000BB' },
   sheet: {
     backgroundColor: theme.colors.sheet, borderTopLeftRadius: theme.radius.xl, borderTopRightRadius: theme.radius.xl,

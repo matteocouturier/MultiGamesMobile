@@ -71,9 +71,13 @@ export function Body({ style, ...rest }: TextProps) {
   return <Text style={[styles.body, style]} {...rest} />;
 }
 
+// Glassmorphism: frosted blur behind translucent surfaces (web). Cast to any
+// because backdropFilter isn't in RN's style types but works on react-native-web.
+export const glass: any = { backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' };
+
 export function Card({ children, style, ...rest }: ViewProps) {
   return (
-    <View style={[styles.card, style]} {...rest}>
+    <View style={[styles.card, glass, style]} {...rest}>
       {children}
     </View>
   );
@@ -188,17 +192,19 @@ const styles = StyleSheet.create({
   title: {
     color: theme.colors.text,
     fontSize: theme.font.h1,
-    fontWeight: '900',
-    letterSpacing: -0.5,
+    fontFamily: theme.fonts.display,
+    fontWeight: '800',
+    letterSpacing: -0.8,
   },
-  subtitle: { color: theme.colors.textMuted, fontSize: theme.font.body, marginTop: theme.spacing(0.5) },
-  body: { color: theme.colors.text, fontSize: theme.font.body },
+  subtitle: { color: theme.colors.textMuted, fontSize: theme.font.body, fontFamily: theme.fonts.body, marginTop: theme.spacing(0.5) },
+  body: { color: theme.colors.text, fontSize: theme.font.body, fontFamily: theme.fonts.body },
   card: {
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius.lg,
     padding: theme.spacing(2),
     borderWidth: 1,
     borderColor: theme.colors.border,
+    borderTopColor: 'rgba(255,255,255,0.20)',
     ...theme.shadow.card,
   },
   btn: {
@@ -217,7 +223,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: theme.radius.md,
   },
-  btnText: { color: theme.colors.white, fontSize: theme.font.h3, fontWeight: '800', letterSpacing: 0.2 },
+  btnText: { color: theme.colors.white, fontSize: theme.font.h3, fontFamily: theme.fonts.display, fontWeight: '700', letterSpacing: 0.3 },
   pill: {
     paddingHorizontal: theme.spacing(1.5),
     paddingVertical: 5,
@@ -225,7 +231,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     alignSelf: 'flex-start',
   },
-  pillText: { fontSize: theme.font.small, fontWeight: '800', letterSpacing: 0.3 },
+  pillText: { fontSize: theme.font.small, fontFamily: theme.fonts.body, fontWeight: '800', letterSpacing: 0.3 },
   toggle: {
     width: 42,
     height: 42,
