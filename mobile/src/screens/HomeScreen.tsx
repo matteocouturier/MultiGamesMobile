@@ -61,7 +61,10 @@ export function HomeScreen() {
                 <Body style={styles.gameName}>{g.name}</Body>
                 <Body style={styles.gameTag}>{g.tagline}</Body>
                 <View style={styles.gameMeta}>
-                  <Pill label={`${g.minPlayers}-${g.maxPlayers} joueurs`} color={g.color} />
+                  <Pill
+                    label={`${g.minPlayers === g.maxPlayers ? g.minPlayers : `${g.minPlayers}-${g.maxPlayers}`} joueurs`}
+                    color={g.color}
+                  />
                   {g.teamBased && <Pill label={`Équipes de ${g.teamSize}`} color={theme.colors.textMuted} />}
                 </View>
               </View>
