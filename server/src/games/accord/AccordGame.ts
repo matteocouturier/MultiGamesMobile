@@ -2,14 +2,9 @@ import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
 import { pickFresh } from '../shared/freshDeck';
 import { getTeams } from '../shared/teams';
+import promptsData from '../../content/accord.json';
 
-const PROMPTS = [
-  'Un fruit', 'Un animal', 'Une couleur', 'Un pays', 'Un métier', 'Un sport',
-  'Quelque chose de froid', 'Quelque chose de rouge', 'Un moyen de transport',
-  'Un objet dans la cuisine', 'Une boisson', 'Un dessert', 'Un prénom de fille',
-  'Un super-héros', 'Une partie du corps', 'Un instrument de musique', 'Une saison',
-  'Un jour de la semaine', 'Quelque chose de rond', 'Un animal de la ferme',
-];
+const PROMPTS: string[] = promptsData as string[];
 const ROUNDS = 6;
 const TIME = 25;
 const REVEAL = 7;

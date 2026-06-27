@@ -2,12 +2,9 @@ import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
 import { pickFresh } from '../shared/freshDeck';
 import { getTeams } from '../shared/teams';
+import categoriesData from '../../content/bataille.json';
 
-const CATEGORIES = [
-  'Fruits', 'Animaux', 'Pays', 'Couleurs', 'Métiers', 'Sports', 'Légumes',
-  'Villes', 'Prénoms', 'Parties du corps', 'Marques de voiture', 'Boissons',
-  'Instruments de musique', 'Animaux de la ferme', 'Choses dans une cuisine',
-];
+const CATEGORIES: string[] = categoriesData as string[];
 const ROUNDS = 5;
 const TURN_TIME = 12;
 const RESULT_MS = 3500;

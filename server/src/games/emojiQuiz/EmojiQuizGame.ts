@@ -1,38 +1,10 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
 import { pickFresh } from '../shared/freshDeck';
+import puzzlesData from '../../content/emoji-quiz.json';
 
-interface EQ { emojis: string; options: [string, string, string, string]; correct: 0 | 1 | 2 | 3 }
-const PUZZLES: EQ[] = [
-  { emojis: '🦁👑', options: ['Le Roi Lion', 'Madagascar', 'Tarzan', 'Jumanji'], correct: 0 },
-  { emojis: '🕷️🧑', options: ['Batman', 'Spider-Man', 'Ant-Man', 'Hulk'], correct: 1 },
-  { emojis: '❄️⛄👸', options: ['Raiponce', 'Cendrillon', 'La Reine des Neiges', 'Vaiana'], correct: 2 },
-  { emojis: '🐠🔍', options: ['Le Monde de Nemo', 'Shark Tale', 'La Petite Sirène', 'Ponyo'], correct: 0 },
-  { emojis: '🤖❤️', options: ['Terminator', 'Wall-E', 'Transformers', 'Big Hero 6'], correct: 1 },
-  { emojis: '🧙⚡🦉', options: ['Le Seigneur des Anneaux', 'Narnia', 'Harry Potter', 'Merlin'], correct: 2 },
-  { emojis: '🦖🏝️', options: ['King Kong', 'Godzilla', 'Avatar', 'Jurassic Park'], correct: 3 },
-  { emojis: '🚢🧊💔', options: ['Titanic', 'Poseidon', 'Pirates des Caraïbes', 'Le Jour d’après'], correct: 0 },
-  { emojis: '👻🚫', options: ['Casper', 'Ghostbusters', 'Beetlejuice', 'Scream'], correct: 1 },
-  { emojis: '🐭🏰', options: ['Ratatouille', 'Stuart Little', 'Disneyland', 'Cendrillon'], correct: 2 },
-  { emojis: '🟦👨‍🦱🌍', options: ['Shrek', 'Hulk', 'Les Schtroumpfs', 'Avatar'], correct: 3 },
-  { emojis: '🍫🏭', options: ['Charlie et la Chocolaterie', 'Wonka', 'Matilda', 'Hansel et Gretel'], correct: 0 },
-  { emojis: '🦇🌃', options: ['Dracula', 'Batman', 'Gotham', 'Twilight'], correct: 1 },
-  { emojis: '🐝🎬', options: ['Antz', 'Bee Movie', 'Maya l’abeille', 'A Bug’s Life'], correct: 1 },
-  { emojis: '🤡🎈', options: ['Ça', 'Joker', 'Saw', 'Halloween'], correct: 0 },
-  { emojis: '🦇🚗', options: ['Batman', 'Cars', 'Fast & Furious', 'Gotham'], correct: 0 },
-  { emojis: '👽📞🏠', options: ['Men in Black', 'E.T.', 'Signs', 'Arrival'], correct: 1 },
-  { emojis: '🧸👮', options: ['Ted', 'Paddington', 'Winnie l’ourson', 'Toy Story'], correct: 0 },
-  { emojis: '🐷🕷️🕸️', options: ['Babe', 'Charlotte’s Web', 'Trois petits cochons', 'Shrek'], correct: 1 },
-  { emojis: '🏎️⚡', options: ['Cars', 'Speed', 'Le Mans', 'Need for Speed'], correct: 0 },
-  { emojis: '👸🐸', options: ['Shrek', 'La Princesse et la Grenouille', 'Raiponce', 'Mulan'], correct: 1 },
-  { emojis: '🌽👶👨‍🌾', options: ['Les Enfants du maïs', 'Interstellar', 'La Ferme', 'Signs'], correct: 0 },
-  { emojis: '🦈🌊', options: ['Le Monde de Nemo', 'Les Dents de la mer', 'Aquaman', 'Pirates'], correct: 1 },
-  { emojis: '🤠🚀', options: ['Buzz l’Éclair', 'Toy Story', 'Cowboys & Aliens', 'Wall-E'], correct: 1 },
-  { emojis: '🐉🏹', options: ['Mulan', 'Dragons', 'Brave', 'Raya'], correct: 1 },
-  { emojis: '🧛🌙🐺', options: ['Twilight', 'Hôtel Transylvanie', 'Dracula', 'Underworld'], correct: 0 },
-  { emojis: '👨‍🚀🌌🥔', options: ['Gravity', 'Interstellar', 'Seul sur Mars', 'Apollo 13'], correct: 2 },
-  { emojis: '🦸‍♂️🛡️🇺🇸', options: ['Iron Man', 'Captain America', 'Thor', 'Hulk'], correct: 1 },
-];
+interface EQ { emojis: string; options: string[]; correct: number }
+const PUZZLES: EQ[] = puzzlesData as EQ[];
 const TIME = 15, REVEAL = 4, NB = 8;
 
 /** Quiz Emoji — devine ce que représentent les emojis (QCM, points à la rapidité). */

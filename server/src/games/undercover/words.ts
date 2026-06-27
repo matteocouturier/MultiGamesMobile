@@ -1,24 +1,6 @@
+import pairsData from '../../content/undercover.json';
 /** Paires de mots proches : les civils ont le 1er, l'undercover le 2nd. */
-export const WORD_PAIRS: [string, string][] = [
-  ['Chat', 'Tigre'],
-  ['Café', 'Thé'],
-  ['Plage', 'Désert'],
-  ['Vélo', 'Moto'],
-  ['Pomme', 'Poire'],
-  ['Train', 'Métro'],
-  ['Pizza', 'Quiche'],
-  ['Lac', 'Rivière'],
-  ['Roi', 'Empereur'],
-  ['Crayon', 'Stylo'],
-  ['Neige', 'Pluie'],
-  ['Guitare', 'Violon'],
-  ['Médecin', 'Infirmier'],
-  ['Lion', 'Loup'],
-  ['Bateau', 'Sous-marin'],
-  ['Château', 'Palais'],
-  ['Soleil', 'Lune'],
-  ['Football', 'Rugby'],
-];
+export const WORD_PAIRS: [string, string][] = pairsData as [string, string][];
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];

@@ -1,8 +1,9 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
+import config from '../../content/petit-bac.json';
 
-const CATEGORIES = ['Prénom', 'Animal', 'Ville', 'Métier', 'Objet'];
-const LETTERS = 'ABCDEFGHILMNOPRST'.split('');
+const CATEGORIES: string[] = config.categories;
+const LETTERS = config.letters.split('');
 const ROUNDS = 3;
 const PLAY_TIME = 120; // seconds
 const GRACE = 8; // seconds left for others once someone stops

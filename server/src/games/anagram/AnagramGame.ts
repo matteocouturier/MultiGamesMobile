@@ -1,18 +1,9 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
 import { pickFresh } from '../shared/freshDeck';
+import wordsData from '../../content/anagram.json';
 
-const WORDS = [
-  'maison', 'jardin', 'orange', 'cheval', 'fenetre', 'voiture', 'montagne', 'banane',
-  'lumiere', 'fromage', 'bouteille', 'ordinateur', 'telephone', 'chocolat', 'musique',
-  'fleur', 'soleil', 'nuage', 'tortue', 'guitare', 'paysage', 'cuisine', 'voyage',
-  'crayon', 'tableau', 'bonjour', 'famille', 'animal', 'plante', 'riviere',
-  'fenetre', 'ballon', 'bateau', 'avion', 'ecole', 'cahier', 'lecture', 'peinture',
-  'dauphin', 'requin', 'abeille', 'papillon', 'caillou', 'parapluie', 'horloge',
-  'fontaine', 'bibliotheque', 'aventure', 'dragon', 'sorciere', 'chateau', 'tresor',
-  'planete', 'galaxie', 'comete', 'desert', 'foret', 'cascade', 'volcan', 'sentier',
-  'casquette', 'echarpe', 'manteau', 'sandales', 'pantalon', 'chaussure',
-];
+const WORDS: string[] = wordsData as string[];
 const ROUNDS = 6;
 const TIME = 30;
 const REVEAL = 4;

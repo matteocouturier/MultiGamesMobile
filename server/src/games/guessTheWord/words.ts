@@ -1,15 +1,6 @@
+import wordsData from '../../content/guess-the-word.json';
 /** French word bank for "Devine le mot". Easily extendable. */
-export const WORDS: string[] = [
-  'Montagne', 'Guitare', 'Éléphant', 'Pizza', 'Ordinateur', 'Plage', 'Volcan',
-  'Bibliothèque', 'Parapluie', 'Dauphin', 'Château', 'Fusée', 'Chocolat',
-  'Aspirateur', 'Pyramide', 'Cascade', 'Trampoline', 'Boussole', 'Hélicoptère',
-  'Marionnette', 'Phare', 'Avalanche', 'Saxophone', 'Kangourou', 'Lanterne',
-  'Brouette', 'Tornade', 'Cactus', 'Igloo', 'Sirène', 'Télescope', 'Vampire',
-  'Brouillard', 'Carrousel', 'Escargot', 'Feu d’artifice', 'Labyrinthe',
-  'Moustache', 'Perroquet', 'Sous-marin', 'Toboggan', 'Tournevis', 'Citrouille',
-  'Domino', 'Étoile filante', 'Grenouille', 'Hamac', 'Jongleur', 'Mammouth',
-  'Origami', 'Pingouin', 'Radeau', 'Sablier', 'Trésor', 'Ukulélé', 'Wagon',
-];
+export const WORDS: string[] = wordsData as string[];
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];

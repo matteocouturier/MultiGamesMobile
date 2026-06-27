@@ -12,6 +12,7 @@ import {
 } from './shared/events';
 import { attachSocketServer } from './socket';
 import { registerGames } from './games';
+import { ICON_192, ICON_512 } from './web/icons';
 
 const PORT = Number(process.env.PORT) || 4000;
 
@@ -37,6 +38,41 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEve
 const manager = attachSocketServer(io);
 
 app.get('/stats', (_req, res) => res.json(manager.stats()));
+
+// --- PWA: manifest, service worker & icons (installable "real app") ---------
+app.get('/manifest.webmanifest', (_req, res) => {
+  res.type('application/manifest+json').send(
+    JSON.stringify({
+      name: 'MultiGames',
+      short_name: 'MultiGames',
+      description: 'Des mini-jeux à plusieurs, en temps réel.',
+      start_url: '/',
+      scope: '/',
+      display: 'standalone',
+      orientation: 'portrait',
+      background_color: '#08060F',
+      theme_color: '#08060F',
+      icons: [
+        { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+        { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+      ],
+    })
+  );
+});
+app.get('/sw.js', (_req, res) => {
+  res.type('application/javascript').send(
+    `self.addEventListener('install', (e) => self.skipWaiting());
+self.addEventListener('activate', (e) => self.clients.claim());
+self.addEventListener('fetch', () => {});`
+  );
+});
+const png192 = Buffer.from(ICON_192, 'base64');
+const png512 = Buffer.from(ICON_512, 'base64');
+const sendPng = (buf: Buffer) => (_req: express.Request, res: express.Response) =>
+  res.type('image/png').set('Cache-Control', 'public, max-age=604800').send(buf);
+app.get('/icon-192.png', sendPng(png192));
+app.get('/icon-512.png', sendPng(png512));
+app.get('/apple-touch-icon.png', sendPng(png192));
 
 // Serve the compiled web app (Expo web export) if it's bundled with the server.
 // This makes the game playable directly in the browser from the same origin —

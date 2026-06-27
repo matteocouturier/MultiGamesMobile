@@ -1,14 +1,9 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
 import { pickFresh } from '../shared/freshDeck';
+import wordsData from '../../content/hangman.json';
 
-const WORDS = [
-  'ordinateur', 'montagne', 'chocolat', 'aventure', 'bibliotheque', 'telephone',
-  'parapluie', 'dinosaure', 'guitare', 'fromage', 'voyage', 'jardin', 'cascade',
-  'horloge', 'fontaine', 'sorciere', 'dragon', 'tresor', 'galaxie', 'planete',
-  'cuisine', 'peinture', 'musique', 'fenetre', 'bateau', 'requin', 'abeille',
-  'papillon', 'casquette', 'manteau', 'sentier', 'volcan', 'desert', 'comete',
-];
+const WORDS: string[] = wordsData as string[];
 const ROUNDS = 4;
 const MAX_ERRORS = 8;
 const REVEAL_MS = 4500;

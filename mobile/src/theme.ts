@@ -164,6 +164,40 @@ try {
       * { -webkit-tap-highlight-color: transparent; }
     `;
     doc.head.appendChild(style);
+
+    // Link the PWA manifest + touch icon (installable app).
+    const addLink = (rel: string, href: string) => {
+      let l = doc.querySelector(`link[rel="${rel}"]`);
+      if (!l) {
+        l = doc.createElement('link');
+        l.setAttribute('rel', rel);
+        doc.head.appendChild(l);
+      }
+      l.setAttribute('href', href);
+    };
+    addLink('manifest', '/manifest.webmanifest');
+    addLink('apple-touch-icon', '/apple-touch-icon.png');
+
+    // Register the service worker where allowed (https or localhost) — required
+    // for Android's "Install app". Harmless/no-op over plain http.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const g = globalThis as any;
+    const sw = g.navigator?.serviceWorker;
+    const loc = g.location;
+    if (sw && (loc?.protocol === 'https:' || loc?.hostname === 'localhost')) {
+      sw.register('/sw.js').catch(() => {});
+    }
+
+    // Block zoom for an app-like feel. `touch-action: manipulation` (above)
+    // already kills double-tap zoom WITHOUT slowing rapid game taps. Here we
+    // also block iOS pinch (gesture* events) and desktop ctrl+wheel/keys.
+    doc.addEventListener('gesturestart', (e: Event) => e.preventDefault());
+    doc.addEventListener('gesturechange', (e: Event) => e.preventDefault());
+    doc.addEventListener('gestureend', (e: Event) => e.preventDefault());
+    g.addEventListener?.('wheel', (e: any) => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+    g.addEventListener?.('keydown', (e: any) => {
+      if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) e.preventDefault();
+    });
   }
 } catch {
   /* native: no document */

@@ -1,0 +1,6 @@
+[
+  ["Froid", "Chaud"], ["Inutile", "Indispensable"], ["Vieux", "Moderne"], ["Mauvais", "Bon"],
+  ["Petit", "Grand"], ["Pas cher", "Cher"], ["Calme", "Excitant"], ["Connu", "Méconnu"],
+  ["Sain", "Malsain"], ["Facile", "Difficile"], ["Laid", "Beau"], ["Lent", "Rapide"],
+  ["Triste", "Joyeux"], ["Commun", "Rare"], ["Sérieux", "Drôle"], ["Sucré", "Salé"]
+]

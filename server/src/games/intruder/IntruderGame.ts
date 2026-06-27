@@ -1,26 +1,10 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
 import { pickFresh } from '../shared/freshDeck';
+import puzzlesData from '../../content/intruder.json';
 
-interface IQ { items: [string, string, string, string]; intruder: 0 | 1 | 2 | 3; hint: string }
-const PUZZLES: IQ[] = [
-  { items: ['🍎 Pomme', '🍌 Banane', '🥕 Carotte', '🍒 Cerise'], intruder: 2, hint: 'fruits' },
-  { items: ['🐶 Chien', '🐱 Chat', '🐟 Poisson', '🚗 Voiture'], intruder: 3, hint: 'animaux' },
-  { items: ['⚽ Foot', '🎾 Tennis', '🏀 Basket', '🎹 Piano'], intruder: 3, hint: 'sports' },
-  { items: ['🔴 Rouge', '🔵 Bleu', '🟢 Vert', '🐘 Éléphant'], intruder: 3, hint: 'couleurs' },
-  { items: ['Paris', 'Lyon', 'Berlin', 'Marseille'], intruder: 2, hint: 'villes françaises' },
-  { items: ['Lundi', 'Mardi', 'Juillet', 'Vendredi'], intruder: 2, hint: 'jours' },
-  { items: ['Lion', 'Tigre', 'Panthère', 'Mouton'], intruder: 3, hint: 'félins' },
-  { items: ['🍕 Pizza', '🍔 Burger', '🌮 Tacos', '👟 Basket'], intruder: 3, hint: 'plats' },
-  { items: ['Rose', 'Tulipe', 'Chêne', 'Marguerite'], intruder: 2, hint: 'fleurs' },
-  { items: ['Guitare', 'Violon', 'Trompette', 'Marteau'], intruder: 3, hint: 'instruments' },
-  { items: ['Mars', 'Vénus', 'Lune', 'Jupiter'], intruder: 2, hint: 'planètes' },
-  { items: ['Pouce', 'Index', 'Genou', 'Majeur'], intruder: 2, hint: 'doigts' },
-  { items: ['Bleu', 'Carré', 'Triangle', 'Cercle'], intruder: 0, hint: 'formes' },
-  { items: ['Requin', 'Dauphin', 'Thon', 'Aigle'], intruder: 3, hint: 'animaux marins' },
-  { items: ['Janvier', 'Avril', 'Lundi', 'Août'], intruder: 2, hint: 'mois' },
-  { items: ['Carotte', 'Patate', 'Poireau', 'Fraise'], intruder: 3, hint: 'légumes' },
-];
+interface IQ { items: string[]; intruder: number; hint: string }
+const PUZZLES: IQ[] = puzzlesData as IQ[];
 const TIME = 12, REVEAL = 4, NB = 8;
 
 /** Devine l'intrus — trouve l'élément qui n'appartient pas à la catégorie. QCM rapide. */

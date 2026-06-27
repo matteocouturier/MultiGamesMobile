@@ -1,0 +1,12 @@
+[
+  "maison", "voiture", "chat", "chien", "table", "chaise", "fenetre", "porte",
+  "jardin", "fleur", "arbre", "montagne", "riviere", "soleil", "lune", "etoile",
+  "manger", "boire", "courir", "sauter", "parler", "ecouter", "regarder", "penser",
+  "rouge", "bleu", "vert", "jaune", "orange", "violet", "noir", "blanc",
+  "matin", "journee", "soiree", "minute", "seconde", "heure", "semaine", "annee",
+  "pomme", "banane", "fraise", "cerise", "raisin", "tomate", "carotte",
+  "ordinateur", "telephone", "musique", "cinema", "theatre", "lecture", "voyage",
+  "animal", "oiseau", "poisson", "cheval", "lapin", "souris", "tortue", "lion",
+  "travail", "ecole", "famille", "ami", "amour", "bonheur", "cuisine", "plage",
+  "feliciter", "partir", "arriver", "comprendre", "apprendre", "construire"
+]

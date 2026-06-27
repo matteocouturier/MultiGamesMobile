@@ -2,13 +2,9 @@ import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
 import { pickFresh } from '../shared/freshDeck';
 import { getTeams } from '../shared/teams';
+import spectraData from '../../content/wavelength.json';
 
-const SPECTRA: [string, string][] = [
-  ['Froid', 'Chaud'], ['Inutile', 'Indispensable'], ['Vieux', 'Moderne'], ['Mauvais', 'Bon'],
-  ['Petit', 'Grand'], ['Pas cher', 'Cher'], ['Calme', 'Excitant'], ['Connu', 'Méconnu'],
-  ['Sain', 'Malsain'], ['Facile', 'Difficile'], ['Laid', 'Beau'], ['Lent', 'Rapide'],
-  ['Triste', 'Joyeux'], ['Commun', 'Rare'], ['Sérieux', 'Drôle'], ['Sucré', 'Salé'],
-];
+const SPECTRA: [string, string][] = spectraData as [string, string][];
 const CLUE_MS = 40000;
 const GUESS_MS = 40000;
 const REVEAL_MS = 7000;

@@ -1,26 +1,10 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
 import { pickFresh } from '../shared/freshDeck';
+import questionsData from '../../content/popular.json';
 
 interface PQ { q: string; options: string[] }
-const QUESTIONS: PQ[] = [
-  { q: 'Plage ou Montagne ?', options: ['🏖️ Plage', '⛰️ Montagne'] },
-  { q: 'Chien ou Chat ?', options: ['🐶 Chien', '🐱 Chat'] },
-  { q: 'Sucré ou Salé ?', options: ['🍰 Sucré', '🧀 Salé'] },
-  { q: 'Été ou Hiver ?', options: ['☀️ Été', '❄️ Hiver'] },
-  { q: 'Pizza ou Burger ?', options: ['🍕 Pizza', '🍔 Burger'] },
-  { q: 'Film ou Série ?', options: ['🎬 Film', '📺 Série'] },
-  { q: 'Café ou Thé ?', options: ['☕ Café', '🍵 Thé'] },
-  { q: 'Matin ou Soir ?', options: ['🌅 Matin', '🌙 Soir'] },
-  { q: 'Ville ou Campagne ?', options: ['🏙️ Ville', '🌾 Campagne'] },
-  { q: 'Sucré : Chocolat ou Bonbon ?', options: ['🍫 Chocolat', '🍬 Bonbon'] },
-  { q: 'Voyage : Avion ou Voiture ?', options: ['✈️ Avion', '🚗 Voiture'] },
-  { q: 'Lecture ou Jeux vidéo ?', options: ['📚 Lecture', '🎮 Jeux'] },
-  { q: 'Le meilleur repas ?', options: ['🥐 Petit-déj', '🍝 Déjeuner', '🍕 Dîner'] },
-  { q: 'Ta saison préférée ?', options: ['🌸 Printemps', '☀️ Été', '🍂 Automne', '❄️ Hiver'] },
-  { q: 'Soirée idéale ?', options: ['🎉 Fête', '🛋️ Canapé', '🍽️ Resto'] },
-  { q: 'Super-pouvoir ?', options: ['🦅 Voler', '👻 Invisible', '⏱️ Stopper le temps'] },
-];
+const QUESTIONS: PQ[] = questionsData as PQ[];
 const TIME = 12;
 const REVEAL = 6;
 const NB = 6;

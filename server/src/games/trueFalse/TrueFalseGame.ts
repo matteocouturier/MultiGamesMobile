@@ -1,48 +1,10 @@
 import { GameContext, GameInstance } from '../../core/game';
 import { GameResults } from '../../shared/types';
 import { pickFresh } from '../shared/freshDeck';
+import statementsData from '../../content/true-false.json';
 
 interface Statement { text: string; answer: boolean }
-const STATEMENTS: Statement[] = [
-  { text: 'La Grande Muraille de Chine est visible depuis la Lune à l’œil nu.', answer: false },
-  { text: 'Le miel ne périme jamais.', answer: true },
-  { text: 'Les poissons rouges n’ont que 3 secondes de mémoire.', answer: false },
-  { text: 'Un éclair est plus chaud que la surface du Soleil.', answer: true },
-  { text: 'Les humains n’utilisent que 10% de leur cerveau.', answer: false },
-  { text: 'La tomate est techniquement un fruit.', answer: true },
-  { text: 'Le sang humain est bleu dans les veines.', answer: false },
-  { text: 'Les pieuvres ont trois cœurs.', answer: true },
-  { text: 'On avale 8 araignées par an en dormant.', answer: false },
-  { text: 'La tour Eiffel grandit en été.', answer: true },
-  { text: 'Les bananes poussent sur des arbres.', answer: false },
-  { text: 'Le requin existait avant les arbres.', answer: true },
-  { text: 'Les chauves-souris sont aveugles.', answer: false },
-  { text: 'Il est impossible d’éternuer les yeux ouverts.', answer: true },
-  { text: 'Vénus est la planète la plus chaude du système solaire.', answer: true },
-  { text: 'Les autruches cachent leur tête dans le sable quand elles ont peur.', answer: false },
-  { text: 'Un groupe de flamants roses s’appelle une "flamboyance".', answer: true },
-  { text: 'Le Mont Everest est la montagne la plus haute depuis sa base.', answer: false },
-  { text: 'Les escargots peuvent dormir pendant 3 ans.', answer: true },
-  { text: 'La lettre la plus utilisée en français est le "e".', answer: true },
-  { text: 'Les dauphins dorment avec un seul œil ouvert.', answer: true },
-  { text: 'Le cœur d’une crevette se trouve dans sa tête.', answer: true },
-  { text: 'Napoléon était extrêmement petit pour son époque.', answer: false },
-  { text: 'Il y a plus d’étoiles dans l’univers que de grains de sable sur Terre.', answer: true },
-  { text: 'Les abeilles peuvent reconnaître des visages humains.', answer: true },
-  { text: 'Le verre est un liquide qui coule très lentement.', answer: false },
-  { text: 'Un jour sur Vénus dure plus longtemps qu’une année sur Vénus.', answer: true },
-  { text: 'Les bébés ont plus d’os que les adultes.', answer: true },
-  { text: 'La carotte a toujours été orange.', answer: false },
-  { text: 'Les kangourous ne peuvent pas marcher à reculons.', answer: true },
-  { text: 'Le chocolat blanc contient du cacao en poudre.', answer: false },
-  { text: 'L’eau chaude peut geler plus vite que l’eau froide.', answer: true },
-  { text: 'Les requins n’ont pas d’os.', answer: true },
-  { text: 'Le caméléon change de couleur uniquement pour se camoufler.', answer: false },
-  { text: 'Il pleut des diamants sur Jupiter et Saturne.', answer: true },
-  { text: 'Les humains et les bananes partagent environ 50% de leur ADN.', answer: true },
-  { text: 'Le pingouin vit au pôle Nord.', answer: false },
-  { text: 'Un éclair ne frappe jamais deux fois le même endroit.', answer: false },
-];
+const STATEMENTS: Statement[] = statementsData as Statement[];
 
 const TIME = 10;
 const REVEAL = 4;
